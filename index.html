@@ -108,70 +108,82 @@
         #print-area { display: none; } 
 
         /* =========================================
-           PRINT STYLES - STRICT SINGLE PAGE A4
+           PRINT STYLES - ROBUST & BULLETPROOF
            ========================================= */
         @media print {
-            /* 1. Force Landscape A4 & Remove browser headers if supported */
             @page {
                 size: landscape;
                 margin: 0;
             }
 
-            /* 2. Hide Website UI */
+            /* Hide Web UI */
             #splash-screen, #main-content, #lightbox { 
                 display: none !important; 
                 height: 0; width: 0; overflow: hidden;
             }
 
-            /* 3. Setup Body for Print */
+            /* Body Setup for A4 */
             body {
                 background: white !important;
                 margin: 0 !important;
                 padding: 0 !important;
-                /* Force A4 Landscape Dimensions */
                 width: 297mm;
                 height: 210mm;
-                overflow: hidden !important; /* Prevents 2nd page spill */
+                overflow: hidden !important;
                 display: block;
             }
 
-            /* 4. The Flex Container - Using absolute positioning to be safe */
+            /* The Flex Card */
             #print-area {
                 display: flex !important;
-                flex-direction: row; /* Strict Side-by-Side */
+                flex-direction: row; /* Force side-by-side */
                 align-items: center;
                 justify-content: center;
+                
+                /* Absolute positioning to guarantee placement */
                 position: absolute;
                 top: 0; left: 0;
                 width: 297mm;
                 height: 210mm;
                 box-sizing: border-box;
-                padding: 10mm; /* Margin around the edges */
+                padding: 15mm; /* Nice margin */
             }
 
-            /* 5. Left Side: Image (Max 60% of width) */
+            /* Add a nice border around the actual content area */
+            .print-card-content {
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+                height: 100%;
+                border: 4px double #c92a42; /* Festive double border */
+                border-radius: 20px;
+                padding: 20px;
+                box-sizing: border-box;
+            }
+
+            /* Left: Image (55%) */
             .print-image-container {
-                width: 60%; 
+                width: 55%; 
                 height: 100%;
                 display: flex;
                 align-items: center;
                 justify-content: center;
             }
 
-            /* Strict image resizing to ensure it never overflows */
             #print-img-target {
-                max-width: 100%;      /* Fit inside the 60% width */
-                max-height: 180mm;    /* Fit inside page height minus padding */
-                width: auto;          /* Maintain aspect ratio */
-                height: auto;         /* Maintain aspect ratio */
+                max-width: 100%;
+                max-height: 100%;
+                width: auto;
+                height: auto;
                 object-fit: contain;
                 border-radius: 10px;
-                box-shadow: none;     /* Remove shadow for cleaner print */
+                border: 2px solid #eee;
+                box-shadow: none; 
             }
 
-            /* 6. Right Side: Text (Max 40% of width) */
+            /* Right: Text (45%) */
             .print-text-container {
-                width: 40%;
+                width: 45%;
                 height: 100%;
                 display: flex;
                 flex-direction: column;
@@ -181,24 +193,27 @@
                 font-family: 'Dancing Script', cursive;
             }
 
+            /* 
+               CRITICAL FIX: 
+               We disable gradients and use solid colors here 
+               so it works on every printer regardless of settings.
+            */
             .print-title {
-                font-size: 5rem; /* Adjust scale */
+                font-size: 5rem;
                 line-height: 1;
                 margin-bottom: 20px;
-            }
-
-            /* Force Print Colors */
-            .gradient-text {
-                color: #b22222 !important; /* Fallback solid color */
-                background: -webkit-linear-gradient(0deg, #006400, #b22222) !important;
-                -webkit-background-clip: text !important;
-                -webkit-text-fill-color: transparent !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
+                
+                /* Force Solid Red */
+                color: #b22222 !important; 
+                background: none !important;
+                -webkit-text-fill-color: #b22222 !important;
+                text-shadow: 2px 2px 0px #eee; /* Slight shadow for depth */
             }
 
             .print-year {
-                font-size: 3rem;
+                font-size: 3.5rem;
+                
+                /* Force Solid Green */
                 color: #2e8b57 !important;
                 font-weight: bold;
                 -webkit-print-color-adjust: exact !important;
@@ -288,20 +303,20 @@
 
     <!-- === PART 4: HIDDEN PRINT LAYOUT === -->
     <div id="print-area">
-        <div class="print-card">
+        <!-- Added an inner container for the border effect -->
+        <div class="print-card-content">
             <div class="print-image-container">
                 <img id="print-img-target" src="" alt="Print Photo">
             </div>
             <div class="print-text-container">
-                <div class="print-title gradient-text">Merry<br>Christmas!</div>
-                <div class="print-year gradient-text">2025</div>
+                <div class="print-title">Merry<br>Christmas!</div>
+                <div class="print-year">2025</div>
             </div>
         </div>
     </div>
 
     <!-- === JAVASCRIPT === -->
     <script>
-        // --- Splash Screen ---
         const giftBox = document.getElementById('gift-box');
         const splashScreen = document.getElementById('splash-screen');
         const mainContent = document.getElementById('main-content');
@@ -316,7 +331,6 @@
             }, 500);
         });
 
-        // --- Lightbox & Buttons ---
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const closeBtn = document.getElementById('close-btn');
@@ -326,7 +340,6 @@
         const printBtn = document.getElementById('print-btn');
         const printImgTarget = document.getElementById('print-img-target');
 
-        // Open Lightbox
         allImages.forEach(img => {
             img.addEventListener('click', () => {
                 lightboxImg.src = img.src; 
