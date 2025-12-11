@@ -108,92 +108,100 @@
         #print-area { display: none; } 
 
         /* =========================================
-           PRINT STYLES - FIXED FOR SINGLE A4 SHEET
+           PRINT STYLES - STRICT SINGLE PAGE A4
            ========================================= */
         @media print {
-            /* 1. Define Paper Size (A4 Landscape) & Remove Margins */
+            /* 1. Force Landscape A4 & Remove browser headers if supported */
             @page {
-                size: A4 landscape;
+                size: landscape;
                 margin: 0;
             }
 
             /* 2. Hide Website UI */
-            #splash-screen, #main-content, #lightbox { display: none !important; }
+            #splash-screen, #main-content, #lightbox { 
+                display: none !important; 
+                height: 0; width: 0; overflow: hidden;
+            }
 
             /* 3. Setup Body for Print */
             body {
                 background: white !important;
-                margin: 0;
-                padding: 0;
-                width: 297mm; /* Exact A4 Width */
-                height: 210mm; /* Exact A4 Height */
-                overflow: hidden; /* Prevents spilling to 2nd page */
-                display: flex;
-                justify-content: center;
-                align-items: center;
+                margin: 0 !important;
+                padding: 0 !important;
+                /* Force A4 Landscape Dimensions */
+                width: 297mm;
+                height: 210mm;
+                overflow: hidden !important; /* Prevents 2nd page spill */
+                display: block;
             }
 
-            /* 4. The Print Card Container */
+            /* 4. The Flex Container - Using absolute positioning to be safe */
             #print-area {
                 display: flex !important;
-                flex-direction: row;
+                flex-direction: row; /* Strict Side-by-Side */
                 align-items: center;
-                justify-content: space-between; /* Space out image and text */
-                width: 260mm; /* Slightly smaller than A4 to allow printer margins */
-                height: 180mm;
-                /* Optional Border to see the card boundary - remove if preferred */
-                /* border: 1px dashed #ccc; */
-            }
-
-            /* 5. Left Side: The Image */
-            .print-image-container {
-                flex: 1.2; /* Image takes slightly more space */
-                display: flex;
                 justify-content: center;
-                align-items: center;
+                position: absolute;
+                top: 0; left: 0;
+                width: 297mm;
+                height: 210mm;
+                box-sizing: border-box;
+                padding: 10mm; /* Margin around the edges */
+            }
+
+            /* 5. Left Side: Image (Max 60% of width) */
+            .print-image-container {
+                width: 60%; 
                 height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
+            /* Strict image resizing to ensure it never overflows */
             #print-img-target {
-                max-width: 100%;
-                max-height: 100%;
-                border-radius: 15px;
-                object-fit: contain; /* Ensures the whole photo fits */
-                box-shadow: 0 0 0 1px #eee;
+                max-width: 100%;      /* Fit inside the 60% width */
+                max-height: 180mm;    /* Fit inside page height minus padding */
+                width: auto;          /* Maintain aspect ratio */
+                height: auto;         /* Maintain aspect ratio */
+                object-fit: contain;
+                border-radius: 10px;
+                box-shadow: none;     /* Remove shadow for cleaner print */
             }
 
-            /* 6. Right Side: The Text */
+            /* 6. Right Side: Text (Max 40% of width) */
             .print-text-container {
-                flex: 0.8;
-                padding-left: 20px;
-                text-align: center;
-                font-family: 'Dancing Script', cursive;
+                width: 40%;
+                height: 100%;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
+                text-align: center;
+                font-family: 'Dancing Script', cursive;
             }
 
             .print-title {
-                font-size: 4.5rem; /* Adjusted to fit */
+                font-size: 5rem; /* Adjust scale */
                 line-height: 1;
                 margin-bottom: 20px;
             }
 
-            /* Force colors to print correctly */
+            /* Force Print Colors */
             .gradient-text {
-                background: -webkit-linear-gradient(0deg, #006400, #b22222);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                color: #b22222 !important; /* Fallback solid color */
+                background: -webkit-linear-gradient(0deg, #006400, #b22222) !important;
+                -webkit-background-clip: text !important;
+                -webkit-text-fill-color: transparent !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
 
             .print-year {
                 font-size: 3rem;
-                color: #2e8b57;
+                color: #2e8b57 !important;
                 font-weight: bold;
-                -webkit-print-color-adjust: exact;
+                -webkit-print-color-adjust: exact !important;
             }
         }
 
@@ -220,7 +228,6 @@
     <div id="main-content">
         <div class="header-overlay"><h1>Christmas 2025</h1></div>
         <div class="scroll-container">
-            
             <!-- ROW 1 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
@@ -235,7 +242,6 @@
                     <img src="images/IMG_3173.jpeg" class="img-circle">
                 </div>
             </div>
-
             <!-- ROW 2 -->
             <div class="scroll-row">
                 <div class="scroll-track move-right">
@@ -250,7 +256,6 @@
                     <img src="images/IMG_3174.jpeg" class="img-circle">
                 </div>
             </div>
-
             <!-- ROW 3 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
@@ -265,18 +270,15 @@
                     <img src="images/IMG_3177.jpeg" class="img-circle">
                 </div>
             </div>
-
         </div>
     </div>
 
     <!-- === PART 3: LIGHTBOX === -->
     <div id="lightbox">
         <div id="close-btn">&times;</div>
-        
         <div class="lightbox-frame">
             <img id="lightbox-img" src="" alt="Enlarged Christmas Photo">
         </div>
-
         <div class="action-buttons">
             <button class="btn" id="download-btn">⬇️ Download</button>
             <button class="btn" id="share-btn">🔗 Share</button>
@@ -286,7 +288,7 @@
 
     <!-- === PART 4: HIDDEN PRINT LAYOUT === -->
     <div id="print-area">
-        <div class="print-card"> <!-- We reuse this class but styled differently in print media query -->
+        <div class="print-card">
             <div class="print-image-container">
                 <img id="print-img-target" src="" alt="Print Photo">
             </div>
@@ -333,12 +335,10 @@
             });
         });
 
-        // Close Lightbox
         const closeLightbox = () => { lightbox.classList.remove('active'); };
         closeBtn.addEventListener('click', closeLightbox);
         lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
 
-        // Button Functions
         downloadBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             const link = document.createElement('a');
