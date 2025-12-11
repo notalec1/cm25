@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Christmas 2025 Gallery</title>
-    <!-- Importing Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Mountains+of+Christmas:wght@700&family=Quicksand:wght@400&display=swap" rel="stylesheet">
     
     <style>
@@ -108,26 +107,94 @@
         /* --- HIDDEN PRINT AREA --- */
         #print-area { display: none; } 
 
-        /* --- PRINT STYLES --- */
+        /* =========================================
+           PRINT STYLES - FIXED FOR SINGLE A4 SHEET
+           ========================================= */
         @media print {
-            #splash-screen, #main-content, #lightbox { display: none !important; }
-            body { background: white !important; overflow: visible !important; }
-
-            #print-area {
-                display: flex !important; flex-direction: row; align-items: center; justify-content: center;
-                width: 100%; height: 100vh; padding: 20px; box-sizing: border-box;
+            /* 1. Define Paper Size (A4 Landscape) & Remove Margins */
+            @page {
+                size: A4 landscape;
+                margin: 0;
             }
-            .print-card { display: flex; align-items: center; gap: 40px; width: 100%; max-width: 1000px; }
-            .print-image-container { flex: 1; }
-            #print-img-target { width: 100%; border-radius: 10px; box-shadow: 0 0 0 2px #ccc; }
-            .print-text-container { flex: 1; text-align: left; font-family: 'Dancing Script', cursive; }
-            .print-title { font-size: 5rem; line-height: 1.1; margin: 0; }
+
+            /* 2. Hide Website UI */
+            #splash-screen, #main-content, #lightbox { display: none !important; }
+
+            /* 3. Setup Body for Print */
+            body {
+                background: white !important;
+                margin: 0;
+                padding: 0;
+                width: 297mm; /* Exact A4 Width */
+                height: 210mm; /* Exact A4 Height */
+                overflow: hidden; /* Prevents spilling to 2nd page */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            /* 4. The Print Card Container */
+            #print-area {
+                display: flex !important;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between; /* Space out image and text */
+                width: 260mm; /* Slightly smaller than A4 to allow printer margins */
+                height: 180mm;
+                /* Optional Border to see the card boundary - remove if preferred */
+                /* border: 1px dashed #ccc; */
+            }
+
+            /* 5. Left Side: The Image */
+            .print-image-container {
+                flex: 1.2; /* Image takes slightly more space */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+            }
+
+            #print-img-target {
+                max-width: 100%;
+                max-height: 100%;
+                border-radius: 15px;
+                object-fit: contain; /* Ensures the whole photo fits */
+                box-shadow: 0 0 0 1px #eee;
+            }
+
+            /* 6. Right Side: The Text */
+            .print-text-container {
+                flex: 0.8;
+                padding-left: 20px;
+                text-align: center;
+                font-family: 'Dancing Script', cursive;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .print-title {
+                font-size: 4.5rem; /* Adjusted to fit */
+                line-height: 1;
+                margin-bottom: 20px;
+            }
+
+            /* Force colors to print correctly */
             .gradient-text {
                 background: -webkit-linear-gradient(0deg, #006400, #b22222);
-                -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
-            .print-year { font-size: 3rem; margin-top: 10px; color: #2e8b57; font-weight: bold; }
-            @page { margin: 0; size: landscape; }
+
+            .print-year {
+                font-size: 3rem;
+                color: #2e8b57;
+                font-weight: bold;
+                -webkit-print-color-adjust: exact;
+            }
         }
 
         @media (max-width: 768px) {
@@ -154,15 +221,14 @@
         <div class="header-overlay"><h1>Christmas 2025</h1></div>
         <div class="scroll-container">
             
-            <!-- ROW 1: Photos 3170 - 3173 -->
+            <!-- ROW 1 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
-                    <!-- Set -->
                     <img src="images/IMG_3170.jpeg" class="img-circle">
                     <img src="images/IMG_3171.jpeg" class="img-circle">
                     <img src="images/IMG_3172.jpeg" class="img-circle">
                     <img src="images/IMG_3173.jpeg" class="img-circle">
-                    <!-- Duplicate Set -->
+                    <!-- Duplicate -->
                     <img src="images/IMG_3170.jpeg" class="img-circle">
                     <img src="images/IMG_3171.jpeg" class="img-circle">
                     <img src="images/IMG_3172.jpeg" class="img-circle">
@@ -170,15 +236,14 @@
                 </div>
             </div>
 
-            <!-- ROW 2: Photos 3174 - 3176 (Repeated to fill space) -->
+            <!-- ROW 2 -->
             <div class="scroll-row">
                 <div class="scroll-track move-right">
-                    <!-- Set -->
                     <img src="images/IMG_3174.jpeg" class="img-circle">
                     <img src="images/IMG_3175.jpeg" class="img-circle">
                     <img src="images/IMG_3176.jpeg" class="img-circle">
-                    <img src="images/IMG_3174.jpeg" class="img-circle"> <!-- Repeat one to lengthen -->
-                    <!-- Duplicate Set -->
+                    <img src="images/IMG_3174.jpeg" class="img-circle"> 
+                    <!-- Duplicate -->
                     <img src="images/IMG_3174.jpeg" class="img-circle">
                     <img src="images/IMG_3175.jpeg" class="img-circle">
                     <img src="images/IMG_3176.jpeg" class="img-circle">
@@ -186,15 +251,14 @@
                 </div>
             </div>
 
-            <!-- ROW 3: Photos 3177 - 3179 (Repeated to fill space) -->
+            <!-- ROW 3 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
-                    <!-- Set -->
                     <img src="images/IMG_3177.jpeg" class="img-circle">
                     <img src="images/IMG_3178.jpeg" class="img-circle">
                     <img src="images/IMG_3179.jpeg" class="img-circle">
-                    <img src="images/IMG_3177.jpeg" class="img-circle"> <!-- Repeat one to lengthen -->
-                    <!-- Duplicate Set -->
+                    <img src="images/IMG_3177.jpeg" class="img-circle"> 
+                    <!-- Duplicate -->
                     <img src="images/IMG_3177.jpeg" class="img-circle">
                     <img src="images/IMG_3178.jpeg" class="img-circle">
                     <img src="images/IMG_3179.jpeg" class="img-circle">
@@ -222,7 +286,7 @@
 
     <!-- === PART 4: HIDDEN PRINT LAYOUT === -->
     <div id="print-area">
-        <div class="print-card">
+        <div class="print-card"> <!-- We reuse this class but styled differently in print media query -->
             <div class="print-image-container">
                 <img id="print-img-target" src="" alt="Print Photo">
             </div>
