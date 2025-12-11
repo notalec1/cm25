@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Christmas 2025 Gallery</title>
-    <!-- Importing Fonts: Mountains of Christmas (Header), Quicksand (Body), Dancing Script (For the Print Card) -->
+    <!-- Importing Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Mountains+of+Christmas:wght@700&family=Quicksand:wght@400&display=swap" rel="stylesheet">
     
     <style>
@@ -66,8 +66,8 @@
             transition: transform 0.3s; cursor: pointer;
         }
         .img-circle:hover { transform: scale(1.1); z-index: 5; border-color: #ffd700; }
-        .move-left { animation: scrollLeft 30s linear infinite; }
-        .move-right { animation: scrollRight 35s linear infinite; }
+        .move-left { animation: scrollLeft 35s linear infinite; }
+        .move-right { animation: scrollRight 40s linear infinite; }
         @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes scrollRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
@@ -75,7 +75,7 @@
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); z-index: 10000;
-            display: flex; flex-direction: column; /* Stack image and buttons */
+            display: flex; flex-direction: column; 
             justify-content: center; align-items: center;
             opacity: 0; visibility: hidden; transition: opacity 0.3s ease; backdrop-filter: blur(5px);
         }
@@ -90,7 +90,6 @@
         .lightbox-frame::after { content: "🌿"; position: absolute; top: -20px; right: -20px; font-size: 3rem; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3)); }
         #lightbox-img { display: block; max-width: 100%; max-height: 65vh; border-radius: 5px; border: 4px solid white; }
         
-        /* Action Buttons Container */
         .action-buttons {
             display: flex; gap: 15px; margin-top: 20px;
         }
@@ -107,72 +106,27 @@
         #close-btn:hover { transform: scale(1.2) rotate(90deg); color: #ffd700; }
 
         /* --- HIDDEN PRINT AREA --- */
-        #print-area { display: none; } /* Hidden normally */
+        #print-area { display: none; } 
 
-        /* --- PRINT STYLES (Only triggers when printing) --- */
+        /* --- PRINT STYLES --- */
         @media print {
-            /* Hide everything on the website */
             #splash-screen, #main-content, #lightbox { display: none !important; }
             body { background: white !important; overflow: visible !important; }
 
-            /* Show and style the Print Area */
             #print-area {
-                display: flex !important;
-                flex-direction: row; /* Side by Side */
-                align-items: center;
-                justify-content: center;
-                width: 100%;
-                height: 100vh;
-                padding: 20px;
-                box-sizing: border-box;
+                display: flex !important; flex-direction: row; align-items: center; justify-content: center;
+                width: 100%; height: 100vh; padding: 20px; box-sizing: border-box;
             }
-
-            .print-card {
-                display: flex;
-                align-items: center;
-                gap: 40px;
-                width: 100%;
-                max-width: 1000px;
-            }
-
-            /* Left Side: Image */
-            .print-image-container {
-                flex: 1;
-            }
-            #print-img-target {
-                width: 100%;
-                border-radius: 10px;
-                box-shadow: 0 0 0 2px #ccc; /* Subtle border for print */
-            }
-
-            /* Right Side: Text */
-            .print-text-container {
-                flex: 1;
-                text-align: left;
-                font-family: 'Dancing Script', cursive;
-            }
-
-            .print-title {
-                font-size: 5rem;
-                line-height: 1.1;
-                margin: 0;
-            }
-
-            /* Gradient Text Effect for Print (Webkit needed for Chrome/Safari) */
+            .print-card { display: flex; align-items: center; gap: 40px; width: 100%; max-width: 1000px; }
+            .print-image-container { flex: 1; }
+            #print-img-target { width: 100%; border-radius: 10px; box-shadow: 0 0 0 2px #ccc; }
+            .print-text-container { flex: 1; text-align: left; font-family: 'Dancing Script', cursive; }
+            .print-title { font-size: 5rem; line-height: 1.1; margin: 0; }
             .gradient-text {
-                background: -webkit-linear-gradient(0deg, #006400, #b22222); /* Dark Green to FireBrick Red */
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
+                background: -webkit-linear-gradient(0deg, #006400, #b22222);
+                -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             }
-
-            .print-year {
-                font-size: 3rem;
-                margin-top: 10px;
-                color: #2e8b57; /* SeaGreen */
-                font-weight: bold;
-            }
-            
-            /* Hide URL headers/footers in browser settings if possible, but this helps */
+            .print-year { font-size: 3rem; margin-top: 10px; color: #2e8b57; font-weight: bold; }
             @page { margin: 0; size: landscape; }
         }
 
@@ -199,54 +153,55 @@
     <div id="main-content">
         <div class="header-overlay"><h1>Christmas 2025</h1></div>
         <div class="scroll-container">
-            <!-- ROW 1 -->
+            
+            <!-- ROW 1: Photos 3170 - 3173 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
-                    <img src="images/1.jpg" class="img-circle">
-                    <img src="images/2.jpg" class="img-circle">
-                    <img src="images/3.jpg" class="img-circle">
-                    <img src="images/4.jpg" class="img-circle">
-                    <img src="images/5.jpg" class="img-circle">
-                    <!-- Duplicate -->
-                    <img src="images/1.jpg" class="img-circle">
-                    <img src="images/2.jpg" class="img-circle">
-                    <img src="images/3.jpg" class="img-circle">
-                    <img src="images/4.jpg" class="img-circle">
-                    <img src="images/5.jpg" class="img-circle">
+                    <!-- Set -->
+                    <img src="images/IMG_3170.jpeg" class="img-circle">
+                    <img src="images/IMG_3171.jpeg" class="img-circle">
+                    <img src="images/IMG_3172.jpeg" class="img-circle">
+                    <img src="images/IMG_3173.jpeg" class="img-circle">
+                    <!-- Duplicate Set -->
+                    <img src="images/IMG_3170.jpeg" class="img-circle">
+                    <img src="images/IMG_3171.jpeg" class="img-circle">
+                    <img src="images/IMG_3172.jpeg" class="img-circle">
+                    <img src="images/IMG_3173.jpeg" class="img-circle">
                 </div>
             </div>
-            <!-- ROW 2 -->
+
+            <!-- ROW 2: Photos 3174 - 3176 (Repeated to fill space) -->
             <div class="scroll-row">
                 <div class="scroll-track move-right">
-                    <img src="images/6.jpg" class="img-circle">
-                    <img src="images/7.jpg" class="img-circle">
-                    <img src="images/8.jpg" class="img-circle">
-                    <img src="images/9.jpg" class="img-circle">
-                    <img src="images/10.jpg" class="img-circle">
-                    <!-- Duplicate -->
-                    <img src="images/6.jpg" class="img-circle">
-                    <img src="images/7.jpg" class="img-circle">
-                    <img src="images/8.jpg" class="img-circle">
-                    <img src="images/9.jpg" class="img-circle">
-                    <img src="images/10.jpg" class="img-circle">
+                    <!-- Set -->
+                    <img src="images/IMG_3174.jpeg" class="img-circle">
+                    <img src="images/IMG_3175.jpeg" class="img-circle">
+                    <img src="images/IMG_3176.jpeg" class="img-circle">
+                    <img src="images/IMG_3174.jpeg" class="img-circle"> <!-- Repeat one to lengthen -->
+                    <!-- Duplicate Set -->
+                    <img src="images/IMG_3174.jpeg" class="img-circle">
+                    <img src="images/IMG_3175.jpeg" class="img-circle">
+                    <img src="images/IMG_3176.jpeg" class="img-circle">
+                    <img src="images/IMG_3174.jpeg" class="img-circle">
                 </div>
             </div>
-            <!-- ROW 3 -->
+
+            <!-- ROW 3: Photos 3177 - 3179 (Repeated to fill space) -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
-                    <img src="images/11.jpg" class="img-circle">
-                    <img src="images/12.jpg" class="img-circle">
-                    <img src="images/13.jpg" class="img-circle">
-                    <img src="images/14.jpg" class="img-circle">
-                    <img src="images/15.jpg" class="img-circle">
-                    <!-- Duplicate -->
-                    <img src="images/11.jpg" class="img-circle">
-                    <img src="images/12.jpg" class="img-circle">
-                    <img src="images/13.jpg" class="img-circle">
-                    <img src="images/14.jpg" class="img-circle">
-                    <img src="images/15.jpg" class="img-circle">
+                    <!-- Set -->
+                    <img src="images/IMG_3177.jpeg" class="img-circle">
+                    <img src="images/IMG_3178.jpeg" class="img-circle">
+                    <img src="images/IMG_3179.jpeg" class="img-circle">
+                    <img src="images/IMG_3177.jpeg" class="img-circle"> <!-- Repeat one to lengthen -->
+                    <!-- Duplicate Set -->
+                    <img src="images/IMG_3177.jpeg" class="img-circle">
+                    <img src="images/IMG_3178.jpeg" class="img-circle">
+                    <img src="images/IMG_3179.jpeg" class="img-circle">
+                    <img src="images/IMG_3177.jpeg" class="img-circle">
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -265,7 +220,7 @@
         </div>
     </div>
 
-    <!-- === PART 4: HIDDEN PRINT LAYOUT (Only Visible on Print) === -->
+    <!-- === PART 4: HIDDEN PRINT LAYOUT === -->
     <div id="print-area">
         <div class="print-card">
             <div class="print-image-container">
@@ -300,8 +255,6 @@
         const lightboxImg = document.getElementById('lightbox-img');
         const closeBtn = document.getElementById('close-btn');
         const allImages = document.querySelectorAll('.img-circle');
-        
-        // Button Elements
         const downloadBtn = document.getElementById('download-btn');
         const shareBtn = document.getElementById('share-btn');
         const printBtn = document.getElementById('print-btn');
@@ -311,7 +264,7 @@
         allImages.forEach(img => {
             img.addEventListener('click', () => {
                 lightboxImg.src = img.src; 
-                printImgTarget.src = img.src; // Update the print preview hidden image too
+                printImgTarget.src = img.src; 
                 lightbox.classList.add('active');
             });
         });
@@ -321,20 +274,17 @@
         closeBtn.addEventListener('click', closeLightbox);
         lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
 
-        // --- BUTTON FUNCTIONALITY ---
-
-        // 1. Download
+        // Button Functions
         downloadBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Stop lightbox closing
+            e.stopPropagation();
             const link = document.createElement('a');
             link.href = lightboxImg.src;
-            link.download = 'Christmas-Memory-2025.jpg';
+            link.download = 'Christmas-Memory-2025.jpeg';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         });
 
-        // 2. Share
         shareBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             if (navigator.share) {
@@ -342,22 +292,18 @@
                     await navigator.share({
                         title: 'Christmas 2025 Photo',
                         text: 'Look at this memory!',
-                        url: window.location.href // Or lightboxImg.src if supported
+                        url: window.location.href
                     });
-                } catch (err) {
-                    console.log('Error sharing:', err);
-                }
+                } catch (err) { console.log('Error sharing:', err); }
             } else {
                 alert('Copy this link to share: ' + window.location.href);
             }
         });
 
-        // 3. Print
         printBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            window.print(); // This triggers the browser print dialog using the @media print styles
+            window.print(); 
         });
-
     </script>
 
 </body>
