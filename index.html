@@ -3,201 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Christmas 2025 Gallery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Mountains+of+Christmas:wght@700&family=Quicksand:wght@400&display=swap" rel="stylesheet">
+    <title>Christmas 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Mountains+of+Christmas:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- BACKGROUND & BASICS --- */
+        /* --- VARIABLES FOR CONSISTENCY --- */
+        :root {
+            --bg-pink: #d45d79;
+            --deep-red: #c92a42;
+            --gold: #ffd700;
+            --white: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- BASE STYLES --- */
         body {
             margin: 0;
             padding: 0;
-            background-color: #d45d79; 
-            /* The original subtle dot pattern you liked */
+            background-color: var(--bg-pink); 
+            /* Subtle dot pattern with lower opacity for elegance */
             background-image: 
-                radial-gradient(white 15%, transparent 16%),
-                radial-gradient(white 15%, transparent 16%);
+                radial-gradient(rgba(255,255,255,0.3) 15%, transparent 16%),
+                radial-gradient(rgba(255,255,255,0.3) 15%, transparent 16%);
             background-size: 60px 60px;
             background-position: 0 0, 30px 30px;
             font-family: 'Quicksand', sans-serif;
             overflow: hidden; 
             height: 100vh;
             width: 100vw;
+            color: white;
         }
 
-        /* --- SNOWFLAKES --- */
+        /* --- SNOWFLAKES (Subtle & Slow) --- */
         .snowflake {
             position: fixed; top: -10px; color: #fff; font-size: 1em;
-            font-family: Arial, sans-serif; text-shadow: 0 0 5px #000;
+            font-family: Arial, sans-serif; 
             user-select: none; z-index: 1; pointer-events: none;
+            opacity: 0.8;
             animation-name: fall; animation-timing-function: linear;
         }
 
         @keyframes fall {
-            0% { transform: translateY(-10vh) translateX(0); opacity: 1; }
+            0% { transform: translateY(-10vh) translateX(0); opacity: 0.8; }
             100% { transform: translateY(110vh) translateX(20px); opacity: 0; }
         }
 
-        /* --- SPLASH SCREEN --- */
+        /* --- SPLASH SCREEN (Smoother Transition) --- */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #c92a42; z-index: 9999;
+            background-color: var(--deep-red); 
+            z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: opacity 0.8s ease-out, visibility 0.8s;
         }
-        .gift-container { position: relative; cursor: pointer; transition: transform 0.1s; }
-        .gift-container:hover { animation: shake 0.5s infinite; }
-        .click-text { color: white; margin-top: 30px; font-size: 1.5rem; font-family: 'Mountains of Christmas', cursive; animation: pulse 1.5s infinite; }
-        .gift-lid { width: 160px; height: 40px; background-color: #ff4757; border-radius: 4px; position: relative; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.2); left: -10px; transition: transform 0.6s ease-in; }
-        .gift-body { width: 140px; height: 120px; background-color: #ff4757; border-radius: 0 0 4px 4px; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        .ribbon-vertical { width: 30px; height: 100%; background-color: #ffd700; margin: 0 auto; }
-        .ribbon-horizontal { width: 100%; height: 30px; background-color: #ffd700; position: absolute; top: 50%; transform: translateY(-50%); }
-        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(3deg); } 50% { transform: rotate(0deg); } 75% { transform: rotate(-3deg); } 100% { transform: rotate(0deg); } }
-        @keyframes pulse { 0% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.7; transform: scale(1); } }
-        .gift-opened .gift-lid { transform: translateY(-100px) rotate(-20deg); }
+        
+        .gift-container { position: relative; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .gift-container:hover { transform: scale(1.05); } /* Gentle zoom instead of violent shake */
+        
+        .click-text { 
+            color: white; margin-top: 40px; font-size: 1.2rem; letter-spacing: 2px;
+            font-family: 'Quicksand', sans-serif; text-transform: uppercase; font-weight: 700;
+            opacity: 0.8; animation: pulse 2s infinite; 
+        }
+
+        /* Refined CSS Gift Box */
+        .gift-lid { width: 140px; height: 35px; background-color: #ff4757; border-radius: 4px; position: relative; z-index: 2; box-shadow: 0 4px 15px var(--shadow); left: -10px; transition: transform 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
+        .gift-body { width: 120px; height: 100px; background-color: #ff4757; border-radius: 0 0 4px 4px; position: relative; box-shadow: 0 10px 25px var(--shadow); }
+        .ribbon-vertical { width: 24px; height: 100%; background-color: var(--gold); margin: 0 auto; }
+        .ribbon-horizontal { width: 100%; height: 24px; background-color: var(--gold); position: absolute; top: 50%; transform: translateY(-50%); }
+        
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        .gift-opened .gift-lid { transform: translateY(-120px) rotate(-10deg); }
         .fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
 
         /* --- MAIN CONTENT --- */
         #main-content {
-            opacity: 0; transition: opacity 1s ease-in;
+            opacity: 0; transition: opacity 1.5s ease;
             display: flex; flex-direction: column; justify-content: center;
             min-height: 100vh; width: 100%;
         }
+
+        /* Minimal Glass Header */
         .header-overlay {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10;
-            background: rgba(255, 255, 255, 0.9); padding: 20px 40px; border-radius: 50px;
-            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); backdrop-filter: blur(5px);
-            border: 2px solid #c92a42;
+            padding: 15px 40px; border-radius: 50px;
+            text-align: center; 
+            /* Minimal glass effect */
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            pointer-events: none; /* Allows clicking photos behind it */
         }
-        h1 { font-family: 'Mountains of Christmas', cursive; font-size: 3rem; color: #c92a42; margin: 0; }
         
-        /* --- GALLERY LAYOUT (Fixed Clipping Issue) --- */
+        h1 { 
+            font-family: 'Mountains of Christmas', cursive; 
+            font-size: 3.5rem; 
+            color: white; 
+            margin: 0; 
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* --- GALLERY GRID --- */
         .scroll-container { 
-            width: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px; /* Spacing between rows */
-            padding: 20px 0; 
+            width: 100%; display: flex; flex-direction: column; gap: 15px; padding: 20px 0; 
         }
         
         .scroll-row { 
-            display: flex; 
-            overflow: hidden; 
-            position: relative; 
-            width: 100%; 
-            /* PADDING FIX: This gives room for the image to grow without being cut off */
-            padding-top: 20px;
-            padding-bottom: 20px;
-            /* Pull rows closer so the padding doesn't make them look too far apart */
-            margin-top: -10px;
-            margin-bottom: -10px;
+            display: flex; overflow: hidden; position: relative; width: 100%; 
+            padding-top: 20px; padding-bottom: 20px;
+            margin-top: -10px; margin-bottom: -10px;
         }
         
         .scroll-row:hover .scroll-track { animation-play-state: paused; }
-        .scroll-track { display: flex; gap: 20px; width: max-content; padding-left: 20px; }
+        .scroll-track { display: flex; gap: 25px; width: max-content; padding-left: 25px; }
         
         .img-circle {
             width: 180px; height: 180px; 
-            border-radius: 50%; 
-            object-fit: cover;
-            border: 4px solid white; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: transform 0.3s; 
-            cursor: pointer;
-            position: relative; 
-            z-index: 5;
+            border-radius: 50%; object-fit: cover;
+            /* Thinner, cleaner border */
+            border: 3px solid white; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            cursor: pointer; position: relative; z-index: 5;
         }
         
         .img-circle:hover { 
-            transform: scale(1.15); /* Zoom Effect */
+            transform: scale(1.12); /* Subtle scale */
             z-index: 6; 
-            border-color: #ffd700; 
+            border-color: var(--gold); 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
         
-        /* Animation speeds adjusted for 50 images */
         .move-left { animation: scrollLeft 120s linear infinite; }
         .move-right { animation: scrollRight 140s linear infinite; }
 
         @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes scrollRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
-        /* --- LIGHTBOX --- */
+        /* --- CLEAN LIGHTBOX --- */
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); z-index: 10000;
+            background: rgba(40, 10, 15, 0.9); /* Darker, cozier background */
+            z-index: 10000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden; transition: opacity 0.3s ease; backdrop-filter: blur(5px);
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease; 
+            backdrop-filter: blur(5px);
         }
         #lightbox.active { opacity: 1; visibility: visible; }
+        
         .lightbox-frame {
-            position: relative; padding: 15px;
-            background: repeating-linear-gradient(45deg, #ffffff, #ffffff 10px, #c92a42 10px, #c92a42 20px);
-            border-radius: 15px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            position: relative; padding: 10px;
+            background: white;
+            border-radius: 12px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
             max-width: 80%; max-height: 70vh; display: flex;
         }
-        .lightbox-frame::after { content: "🌿"; position: absolute; top: -20px; right: -20px; font-size: 3rem; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3)); }
-        #lightbox-img { display: block; max-width: 100%; max-height: 65vh; border-radius: 5px; border: 4px solid white; }
         
-        .action-buttons { display: flex; gap: 15px; margin-top: 20px; }
+        /* Clean image display without distractions */
+        #lightbox-img { display: block; max-width: 100%; max-height: 65vh; border-radius: 6px; }
+        
+        /* Minimalist Buttons */
+        .action-buttons { display: flex; gap: 12px; margin-top: 25px; }
         .btn {
-            background-color: white; border: none; padding: 10px 20px;
-            border-radius: 30px; font-family: 'Quicksand', sans-serif; font-weight: bold;
-            cursor: pointer; transition: transform 0.2s, background-color 0.2s;
-            display: flex; align-items: center; gap: 8px; font-size: 1rem;
-            color: #c92a42; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 10px 25px;
+            border-radius: 50px; 
+            font-family: 'Quicksand', sans-serif; font-weight: 700;
+            cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; gap: 8px; font-size: 0.95rem;
+            color: white; 
+            backdrop-filter: blur(4px);
         }
-        .btn:hover { transform: scale(1.1); background-color: #ffd700; color: #333; }
-        #close-btn { position: absolute; top: 20px; right: 30px; font-size: 3rem; color: white; cursor: pointer; transition: transform 0.2s; }
-        #close-btn:hover { transform: scale(1.2) rotate(90deg); color: #ffd700; }
-
-        /* --- PRINT AREA --- */
-        #print-area { display: none; } 
+        .btn:hover { 
+            background-color: white; color: var(--deep-red); transform: translateY(-2px); 
+        }
         
-        /* The Robust Printing Style (Solid colors, no transparency issues) */
+        #close-btn { 
+            position: absolute; top: 30px; right: 40px; 
+            font-size: 2.5rem; color: rgba(255,255,255,0.6); 
+            cursor: pointer; transition: 0.2s; 
+            font-family: sans-serif; font-weight: 100;
+        }
+        #close-btn:hover { color: white; }
+
+        /* --- PRINT AREA (Preserved & Protected) --- */
+        #print-area { display: none; } 
         @media print {
             @page { size: landscape; margin: 0; }
             #splash-screen, #main-content, #lightbox, .snowflake { display: none !important; height: 0; width: 0; overflow: hidden; }
             body { background: white !important; margin: 0 !important; padding: 0 !important; width: 297mm; height: 210mm; overflow: hidden !important; display: block; }
-            
-            #print-area { 
-                display: flex !important; flex-direction: row; 
-                position: absolute; top: 0; left: 0; 
-                width: 297mm; height: 210mm; 
-                box-sizing: border-box; padding: 15mm; 
-            }
-            
-            .print-card-content { 
-                display: flex; flex-direction: row; 
-                width: 100%; height: 100%; 
-                border: 4px double #c92a42; /* Festive Border */
-                border-radius: 20px; padding: 20px; 
-                box-sizing: border-box; 
-            }
-            
+            #print-area { display: flex !important; flex-direction: row; position: absolute; top: 0; left: 0; width: 297mm; height: 210mm; box-sizing: border-box; padding: 15mm; }
+            .print-card-content { display: flex; flex-direction: row; width: 100%; height: 100%; border: 4px double #c92a42; border-radius: 20px; padding: 20px; box-sizing: border-box; }
             .print-image-container { width: 55%; height: 100%; display: flex; align-items: center; justify-content: center; }
             #print-img-target { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 10px; border: 2px solid #eee; box-shadow: none; }
-            
             .print-text-container { width: 45%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-family: 'Dancing Script', cursive; }
-            
-            /* Solid colors for guaranteed printing */
-            .print-title { 
-                font-size: 5rem; line-height: 1; margin-bottom: 20px; 
-                color: #b22222 !important; 
-                text-shadow: 2px 2px 0px #eee; 
-                background: none !important;
-                -webkit-text-fill-color: #b22222 !important;
-            }
-            .print-year { 
-                font-size: 3.5rem; 
-                color: #2e8b57 !important; 
-                font-weight: bold; 
-                -webkit-print-color-adjust: exact !important; 
-            }
+            .print-title { font-size: 5rem; line-height: 1; margin-bottom: 20px; color: #b22222 !important; text-shadow: 2px 2px 0px #eee; background: none !important; -webkit-text-fill-color: #b22222 !important; }
+            .print-year { font-size: 3.5rem; color: #2e8b57 !important; font-weight: bold; -webkit-print-color-adjust: exact !important; }
         }
 
         @media (max-width: 768px) {
-            .img-circle { width: 120px; height: 120px; }
-            h1 { font-size: 1.5rem; }
-            .lightbox-frame { max-width: 95%; }
+            .img-circle { width: 130px; height: 130px; }
+            h1 { font-size: 2rem; }
+            .header-overlay { padding: 10px 25px; }
             .action-buttons { flex-wrap: wrap; justify-content: center; }
         }
     </style>
@@ -210,7 +219,7 @@
             <div class="gift-lid"><div class="ribbon-vertical"></div></div>
             <div class="gift-body"><div class="ribbon-vertical"></div><div class="ribbon-horizontal"></div></div>
         </div>
-        <p class="click-text">Tap to open!</p>
+        <p class="click-text">Click to Open</p>
     </div>
 
     <!-- MAIN GALLERY -->
@@ -218,7 +227,7 @@
         <div class="header-overlay"><h1>Christmas 2025</h1></div>
         <div class="scroll-container">
             
-            <!-- ROW 1 (Photos 1-17) -->
+            <!-- ROW 1 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
                     <img src="https://picsum.photos/400?random=1" class="img-circle">
@@ -259,7 +268,7 @@
                 </div>
             </div>
 
-            <!-- ROW 2 (Photos 18-34) -->
+            <!-- ROW 2 -->
             <div class="scroll-row">
                 <div class="scroll-track move-right">
                     <img src="https://picsum.photos/400?random=18" class="img-circle">
@@ -300,7 +309,7 @@
                 </div>
             </div>
 
-            <!-- ROW 3 (Photos 35-50) -->
+            <!-- ROW 3 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
                     <img src="https://picsum.photos/400?random=35" class="img-circle">
@@ -377,11 +386,16 @@
         giftBox.addEventListener('click', () => {
             giftBox.classList.add('gift-opened');
             setTimeout(() => {
-                splashScreen.classList.add('fade-out');
+                splashScreen.style.opacity = '0';
+                // Wait for fade out to finish before hiding/showing content
+                setTimeout(() => {
+                    splashScreen.style.visibility = 'hidden';
+                    body.style.overflow = 'auto'; // Enable scroll
+                }, 800);
+                
                 mainContent.style.opacity = '1';
-                body.style.overflow = 'auto'; 
                 startSnow(); 
-            }, 500);
+            }, 600);
         });
 
         function startSnow() {
@@ -389,13 +403,16 @@
                 const snowflake = document.createElement('div');
                 snowflake.classList.add('snowflake');
                 snowflake.innerText = '❄'; 
+                
+                // Randomized positions
                 snowflake.style.left = Math.random() * 100 + 'vw'; 
-                snowflake.style.animationDuration = Math.random() * 3 + 2 + 's'; 
-                snowflake.style.opacity = Math.random(); 
+                snowflake.style.animationDuration = Math.random() * 3 + 4 + 's'; // Slower: 4-7s
+                snowflake.style.opacity = Math.random() * 0.5 + 0.3; // Subtler opacity
                 snowflake.style.fontSize = Math.random() * 10 + 10 + 'px'; 
+                
                 document.body.appendChild(snowflake);
-                setTimeout(() => { snowflake.remove(); }, 5000);
-            }, 100); 
+                setTimeout(() => { snowflake.remove(); }, 7000);
+            }, 200); // Less frequent snow
         }
 
         const lightbox = document.getElementById('lightbox');
