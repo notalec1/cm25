@@ -49,19 +49,14 @@
             z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: opacity 1s ease-out, visibility 1s;
-            opacity: 1;
-            visibility: visible;
         }
         
-        /* TV Focus Fixes */
         .gift-container { 
-            position: relative; 
-            cursor: pointer; 
+            position: relative; cursor: pointer; 
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             outline: none;
         }
         .gift-container:hover, .gift-container:focus { transform: scale(1.05); } 
-        /* Gold ring when selected by remote */
         .gift-container:focus .gift-body { box-shadow: 0 0 0 5px var(--gold), 0 10px 25px var(--shadow); }
         
         .click-text { 
@@ -78,8 +73,6 @@
         
         @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
         .gift-opened .gift-lid { transform: translateY(-120px) rotate(-10deg); }
-        
-        /* Helper class to force hide */
         .hidden { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
 
         /* --- MAIN CONTENT --- */
@@ -167,6 +160,9 @@
         }
         .btn:hover { background-color: var(--gold); color: #141e30; transform: translateY(-2px); border-color: var(--gold); }
         
+        /* Active Slideshow State */
+        .btn.playing { background-color: var(--deep-red); border-color: var(--deep-red); }
+
         #close-btn { 
             position: absolute; top: 30px; right: 40px; font-size: 2.5rem; 
             color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.2s; 
@@ -202,7 +198,6 @@
 <body>
 
     <!-- SPLASH SCREEN -->
-    <!-- tabindex="0" makes it focusable on TV Remotes -->
     <div id="splash-screen">
         <div class="gift-container" id="gift-box" tabindex="0" role="button">
             <div class="gift-lid"><div class="ribbon-vertical"></div></div>
@@ -352,6 +347,7 @@
             <img id="lightbox-img" src="" alt="Enlarged Christmas Photo">
         </div>
         <div class="action-buttons">
+            <button class="btn" id="slideshow-btn">▶️ Play</button>
             <button class="btn" id="download-btn">⬇️ Download</button>
             <button class="btn" id="share-btn">🔗 Share</button>
             <button class="btn" id="print-btn">🖨️ Print Card</button>
@@ -378,13 +374,19 @@
         const body = document.body;
         const gridContainer = document.getElementById('library-grid');
 
+        // --- GLOBAL VARIABLES ---
+        let allImageSources = [];
+        let currentImageIndex = 0;
+        let slideshowInterval;
+        let isPlaying = false;
+
         // Check for Deep Link on Load
         window.addEventListener('load', () => {
+            collectAllImages(); // Gather images immediately
             const urlParams = new URLSearchParams(window.location.search);
             const photoParam = urlParams.get('photo');
 
             if (photoParam) {
-                // If deep link, skip splash animation immediately
                 splashScreen.classList.add('hidden');
                 mainContent.style.opacity = '1';
                 body.style.overflow = 'auto'; 
@@ -394,7 +396,7 @@
             }
         });
 
-        // --- SPLASH LOGIC (FIXED FOR TV) ---
+        // --- SPLASH LOGIC (TV Friendly) ---
         function openGift() {
             giftBox.classList.add('gift-opened');
             setTimeout(() => {
@@ -405,15 +407,9 @@
                 populateGrid(); 
             }, 800);
         }
-
-        // Mouse click
         giftBox.addEventListener('click', openGift);
-        
-        // Keyboard (TV Remote "Enter" key)
         giftBox.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.keyCode === 13) {
-                openGift();
-            }
+            if (e.key === 'Enter' || e.keyCode === 13) openGift();
         });
 
         function startSnow() {
@@ -430,7 +426,14 @@
             }, 200); 
         }
 
-        // --- LIGHTBOX ---
+        // --- IMAGE COLLECTION ---
+        function collectAllImages() {
+            const uniqueSrcs = new Set();
+            document.querySelectorAll('.scroll-row img').forEach(img => uniqueSrcs.add(img.src));
+            allImageSources = Array.from(uniqueSrcs);
+        }
+
+        // --- LIGHTBOX & SLIDESHOW ---
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const closeBtn = document.getElementById('close-btn');
@@ -438,11 +441,16 @@
         const shareBtn = document.getElementById('share-btn');
         const printBtn = document.getElementById('print-btn');
         const printImgTarget = document.getElementById('print-img-target');
+        const slideshowBtn = document.getElementById('slideshow-btn');
 
         function openLightbox(src) {
             lightboxImg.src = src; 
             printImgTarget.src = src; 
             lightbox.classList.add('active');
+            
+            // Find index for slideshow
+            currentImageIndex = allImageSources.indexOf(src);
+            if(currentImageIndex === -1) currentImageIndex = 0;
 
             const url = new URL(window.location);
             url.searchParams.set('photo', src);
@@ -450,11 +458,52 @@
         }
 
         function closeLightboxFn() {
+            stopSlideshow(); // Stop music/loop if active
             lightbox.classList.remove('active');
             const url = new URL(window.location);
             url.searchParams.delete('photo');
             window.history.pushState({}, '', url);
         }
+
+        // Slideshow Functions
+        function toggleSlideshow() {
+            if (isPlaying) {
+                stopSlideshow();
+            } else {
+                startSlideshow();
+            }
+        }
+
+        function startSlideshow() {
+            isPlaying = true;
+            slideshowBtn.innerText = "⏸ Pause";
+            slideshowBtn.classList.add('playing');
+            
+            slideshowInterval = setInterval(() => {
+                currentImageIndex = (currentImageIndex + 1) % allImageSources.length;
+                const nextSrc = allImageSources[currentImageIndex];
+                lightboxImg.src = nextSrc;
+                printImgTarget.src = nextSrc;
+                
+                // Update URL silently
+                const url = new URL(window.location);
+                url.searchParams.set('photo', nextSrc);
+                window.history.replaceState({}, '', url);
+            }, 3000); // 3 Seconds per slide
+        }
+
+        function stopSlideshow() {
+            isPlaying = false;
+            slideshowBtn.innerText = "▶️ Play";
+            slideshowBtn.classList.remove('playing');
+            clearInterval(slideshowInterval);
+        }
+
+        // Listeners
+        slideshowBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleSlideshow();
+        });
 
         document.querySelectorAll('.img-circle').forEach(img => {
             img.addEventListener('click', () => openLightbox(img.src));
@@ -469,11 +518,10 @@
         let isGridView = false;
 
         function populateGrid() {
-            const uniqueSrcs = new Set();
-            document.querySelectorAll('.scroll-row img').forEach(img => uniqueSrcs.add(img.src));
+            if (allImageSources.length === 0) collectAllImages();
             
             gridContainer.innerHTML = ''; 
-            uniqueSrcs.forEach(src => {
+            allImageSources.forEach(src => {
                 const img = document.createElement('img');
                 img.src = src;
                 img.classList.add('grid-img');
