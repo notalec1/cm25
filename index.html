@@ -18,22 +18,34 @@
         }
 
         /* --- BASE STYLES --- */
+        /* FIX 1: The background is now a fixed pseudo-element so it NEVER repeats or cuts off */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; 
+            left: 0;
+            width: 100%; 
+            height: 100%;
+            background: radial-gradient(ellipse at top, var(--bg-night-bot) 0%, var(--bg-night-top) 100%);
+            z-index: -2; /* Stays behind everything */
+        }
+
         body {
             margin: 0;
             padding: 0;
-            background: radial-gradient(ellipse at top, var(--bg-night-bot) 0%, var(--bg-night-top) 100%);
             font-family: 'Quicksand', sans-serif;
-            overflow: hidden; /* Initial state */
-            height: 100vh;
-            width: 100vw;
             color: white;
+            min-height: 100vh;
+            /* FIX 2: Force scrollbar track to be visible always to prevent header jumping */
+            overflow-y: scroll; 
+            overflow-x: hidden;
         }
 
         /* --- SNOWFLAKES --- */
         .snowflake {
             position: fixed; top: -10px; color: #fff; font-size: 1em;
             font-family: Arial, sans-serif; 
-            user-select: none; z-index: 1; pointer-events: none;
+            user-select: none; z-index: -1; pointer-events: none;
             opacity: 0.9; text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
             animation-name: fall; animation-timing-function: linear;
         }
@@ -46,6 +58,7 @@
         /* --- SPLASH SCREEN --- */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            /* Matches background for seamless transition */
             background: radial-gradient(ellipse at top, var(--bg-night-bot) 0%, var(--bg-night-top) 100%);
             z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -75,15 +88,15 @@
         #main-content {
             opacity: 0; transition: opacity 1.5s ease;
             display: flex; flex-direction: column; justify-content: center;
-            min-height: 100vh; width: 100%;
-            /* Allow scrolling when in grid view */
-            overflow-y: auto; 
-            overflow-x: hidden;
+            /* Ensure content sits above the fixed background */
+            position: relative; 
+            z-index: 1;
+            min-height: 100vh;
         }
 
         /* Glass Header */
         .header-overlay {
-            position: fixed; top: 10%; left: 50%; transform: translate(-50%, -50%); z-index: 100;
+            position: fixed; top: 40px; left: 50%; transform: translateX(-50%); z-index: 100;
             padding: 15px 40px; border-radius: 20px;
             text-align: center; 
             background: rgba(255, 255, 255, 0.05);
@@ -91,15 +104,16 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             display: flex; flex-direction: column; align-items: center; gap: 10px;
+            width: max-content;
         }
         
         h1 { 
             font-family: 'Mountains of Christmas', cursive; 
             font-size: 3rem; color: white; margin: 0; 
             text-shadow: 0 0 15px rgba(255,255,255,0.4);
+            white-space: nowrap;
         }
 
-        /* The View Toggle Button */
         .view-btn {
             background-color: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.3);
@@ -108,7 +122,7 @@
             text-transform: uppercase; letter-spacing: 1px;
             padding: 8px 16px; border-radius: 20px;
             cursor: pointer; transition: all 0.3s;
-            pointer-events: auto; /* Ensure clickable */
+            pointer-events: auto; 
             font-size: 0.8rem;
         }
         .view-btn:hover { background-color: var(--gold); color: #141e30; }
@@ -116,7 +130,7 @@
         /* --- MARQUEE VIEW (Default) --- */
         .scroll-container { 
             width: 100%; display: flex; flex-direction: column; gap: 15px; padding: 20px 0; 
-            margin-top: 100px; /* Space for fixed header */
+            margin-top: 140px; /* Space for fixed header */
         }
         
         .scroll-row { 
@@ -149,10 +163,10 @@
 
         /* --- GRID VIEW (Hidden by default) --- */
         #library-grid {
-            display: none; /* Hidden initially */
+            display: none; 
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
-            padding: 180px 40px 40px 40px; /* Padding top clears the fixed header */
+            padding: 180px 40px 40px 40px; 
             width: 100%;
             box-sizing: border-box;
             max-width: 1400px;
@@ -163,9 +177,9 @@
 
         .grid-img {
             width: 100%;
-            aspect-ratio: 1 / 1; /* Perfect Square */
+            aspect-ratio: 1 / 1; 
             object-fit: cover;
-            border-radius: 15px; /* Rounded squares for grid */
+            border-radius: 15px; 
             border: 2px solid rgba(255,255,255,0.5);
             cursor: pointer;
             transition: all 0.3s;
@@ -220,6 +234,8 @@
             @page { size: landscape; margin: 0; }
             #splash-screen, #main-content, #lightbox, .snowflake, .header-overlay { display: none !important; height: 0; width: 0; overflow: hidden; }
             body { background: white !important; margin: 0 !important; padding: 0 !important; width: 297mm; height: 210mm; overflow: hidden !important; display: block; }
+            body::before { display: none; } /* Hide the night background on print */
+            
             #print-area { display: flex !important; flex-direction: row; position: absolute; top: 0; left: 0; width: 297mm; height: 210mm; box-sizing: border-box; padding: 15mm; }
             .print-card-content { display: flex; flex-direction: row; width: 100%; height: 100%; border: 4px double #c92a42; border-radius: 20px; padding: 20px; box-sizing: border-box; }
             .print-image-container { width: 55%; height: 100%; display: flex; align-items: center; justify-content: center; }
@@ -232,9 +248,9 @@
         @media (max-width: 768px) {
             .img-circle { width: 130px; height: 130px; }
             h1 { font-size: 2rem; }
-            .header-overlay { top: 10%; width: 80%; padding: 10px 15px; }
+            .header-overlay { top: 30px; padding: 10px 15px; width: 85%; }
             .action-buttons { flex-wrap: wrap; justify-content: center; }
-            #library-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); padding: 180px 20px 20px 20px; }
+            #library-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); padding: 160px 20px 20px 20px; }
         }
     </style>
 </head>
@@ -279,7 +295,7 @@
                     <img src="https://picsum.photos/400?random=15" class="img-circle">
                     <img src="https://picsum.photos/400?random=16" class="img-circle">
                     <img src="https://picsum.photos/400?random=17" class="img-circle">
-                    <!-- Dupes for infinite scroll -->
+                    <!-- Dupes -->
                     <img src="https://picsum.photos/400?random=1" class="img-circle">
                     <img src="https://picsum.photos/400?random=2" class="img-circle">
                     <img src="https://picsum.photos/400?random=3" class="img-circle">
@@ -426,7 +442,6 @@
                 splashScreen.style.opacity = '0';
                 setTimeout(() => {
                     splashScreen.style.visibility = 'hidden';
-                    body.style.overflow = 'auto'; // Enable scroll
                 }, 800);
                 mainContent.style.opacity = '1';
                 startSnow(); 
@@ -500,13 +515,11 @@
                 scrollContainer.style.display = 'none';
                 gridContainer.classList.add('active');
                 viewBtn.innerText = "Back to Scroll";
-                body.style.overflowY = 'auto'; // Ensure vertical scroll works
             } else {
                 // Show Marquee, Hide Grid
                 scrollContainer.style.display = 'flex';
                 gridContainer.classList.remove('active');
                 viewBtn.innerText = "View Full Library";
-                body.style.overflowY = 'auto'; 
             }
         });
 
