@@ -7,26 +7,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Mountains+of+Christmas:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- VARIABLES FOR CONSISTENCY --- */
+        /* --- VARIABLES --- */
         :root {
-            --bg-pink: #d45d79;
+            /* New Dark Night Palette */
+            --bg-night-top: #141e30;
+            --bg-night-bot: #243b55;
             --deep-red: #c92a42;
             --gold: #ffd700;
             --white: #ffffff;
-            --shadow: rgba(0, 0, 0, 0.15);
+            --shadow: rgba(0, 0, 0, 0.4); /* Darker shadows for night mode */
         }
 
         /* --- BASE STYLES --- */
         body {
             margin: 0;
             padding: 0;
-            background-color: var(--bg-pink); 
-            /* Subtle dot pattern with lower opacity for elegance */
-            background-image: 
-                radial-gradient(rgba(255,255,255,0.3) 15%, transparent 16%),
-                radial-gradient(rgba(255,255,255,0.3) 15%, transparent 16%);
-            background-size: 60px 60px;
-            background-position: 0 0, 30px 30px;
+            /* Snowy Night Gradient */
+            background: radial-gradient(ellipse at top, var(--bg-night-bot) 0%, var(--bg-night-top) 100%);
             font-family: 'Quicksand', sans-serif;
             overflow: hidden; 
             height: 100vh;
@@ -34,43 +31,47 @@
             color: white;
         }
 
-        /* --- SNOWFLAKES (Subtle & Slow) --- */
+        /* --- SNOWFLAKES (Brighter for Night Mode) --- */
         .snowflake {
             position: fixed; top: -10px; color: #fff; font-size: 1em;
             font-family: Arial, sans-serif; 
             user-select: none; z-index: 1; pointer-events: none;
-            opacity: 0.8;
+            opacity: 0.9; /* More visible against dark background */
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8); /* Glow effect */
             animation-name: fall; animation-timing-function: linear;
         }
 
         @keyframes fall {
-            0% { transform: translateY(-10vh) translateX(0); opacity: 0.8; }
+            0% { transform: translateY(-10vh) translateX(0); opacity: 0.9; }
             100% { transform: translateY(110vh) translateX(20px); opacity: 0; }
         }
 
-        /* --- SPLASH SCREEN (Smoother Transition) --- */
+        /* --- SPLASH SCREEN --- */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--deep-red); 
+            /* Matches body background for seamless fade */
+            background: radial-gradient(ellipse at top, var(--bg-night-bot) 0%, var(--bg-night-top) 100%);
             z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.8s ease-out, visibility 0.8s;
+            transition: opacity 1s ease-out, visibility 1s;
         }
         
         .gift-container { position: relative; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .gift-container:hover { transform: scale(1.05); } /* Gentle zoom instead of violent shake */
+        .gift-container:hover { transform: scale(1.05); } 
         
         .click-text { 
-            color: white; margin-top: 40px; font-size: 1.2rem; letter-spacing: 2px;
+            color: var(--gold); /* Gold text looks better on blue */
+            margin-top: 40px; font-size: 1.2rem; letter-spacing: 2px;
             font-family: 'Quicksand', sans-serif; text-transform: uppercase; font-weight: 700;
-            opacity: 0.8; animation: pulse 2s infinite; 
+            opacity: 0.9; animation: pulse 2s infinite; 
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
-        /* Refined CSS Gift Box */
+        /* Gift Box */
         .gift-lid { width: 140px; height: 35px; background-color: #ff4757; border-radius: 4px; position: relative; z-index: 2; box-shadow: 0 4px 15px var(--shadow); left: -10px; transition: transform 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
         .gift-body { width: 120px; height: 100px; background-color: #ff4757; border-radius: 0 0 4px 4px; position: relative; box-shadow: 0 10px 25px var(--shadow); }
-        .ribbon-vertical { width: 24px; height: 100%; background-color: var(--gold); margin: 0 auto; }
-        .ribbon-horizontal { width: 100%; height: 24px; background-color: var(--gold); position: absolute; top: 50%; transform: translateY(-50%); }
+        .ribbon-vertical { width: 24px; height: 100%; background-color: var(--gold); margin: 0 auto; box-shadow: 0 0 5px rgba(0,0,0,0.2); }
+        .ribbon-horizontal { width: 100%; height: 24px; background-color: var(--gold); position: absolute; top: 50%; transform: translateY(-50%); box-shadow: 0 0 5px rgba(0,0,0,0.2); }
         
         @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
         .gift-opened .gift-lid { transform: translateY(-120px) rotate(-10deg); }
@@ -83,17 +84,16 @@
             min-height: 100vh; width: 100%;
         }
 
-        /* Minimal Glass Header */
+        /* Glass Header (Updated for Dark Mode) */
         .header-overlay {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10;
             padding: 15px 40px; border-radius: 50px;
             text-align: center; 
-            /* Minimal glass effect */
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            pointer-events: none; /* Allows clicking photos behind it */
+            background: rgba(255, 255, 255, 0.05); /* More transparent */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            pointer-events: none;
         }
         
         h1 { 
@@ -101,7 +101,7 @@
             font-size: 3.5rem; 
             color: white; 
             margin: 0; 
-            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-shadow: 0 0 15px rgba(255,255,255,0.4); /* Glowy text */
         }
 
         /* --- GALLERY GRID --- */
@@ -121,18 +121,17 @@
         .img-circle {
             width: 180px; height: 180px; 
             border-radius: 50%; object-fit: cover;
-            /* Thinner, cleaner border */
-            border: 3px solid white; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 3px solid rgba(255,255,255,0.9); 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5); /* Stronger shadow */
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             cursor: pointer; position: relative; z-index: 5;
         }
         
         .img-circle:hover { 
-            transform: scale(1.12); /* Subtle scale */
+            transform: scale(1.12); 
             z-index: 6; 
             border-color: var(--gold); 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); /* Gold Glow */
         }
         
         .move-left { animation: scrollLeft 120s linear infinite; }
@@ -141,10 +140,10 @@
         @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes scrollRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
-        /* --- CLEAN LIGHTBOX --- */
+        /* --- LIGHTBOX (Dark Mode) --- */
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(40, 10, 15, 0.9); /* Darker, cozier background */
+            background: rgba(10, 15, 30, 0.95); /* Deep dark blue overlay */
             z-index: 10000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; visibility: hidden; transition: opacity 0.3s ease; 
@@ -156,18 +155,16 @@
             position: relative; padding: 10px;
             background: white;
             border-radius: 12px; 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
             max-width: 80%; max-height: 70vh; display: flex;
         }
         
-        /* Clean image display without distractions */
         #lightbox-img { display: block; max-width: 100%; max-height: 65vh; border-radius: 6px; }
         
-        /* Minimalist Buttons */
         .action-buttons { display: flex; gap: 12px; margin-top: 25px; }
         .btn {
-            background-color: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.4);
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
             padding: 10px 25px;
             border-radius: 50px; 
             font-family: 'Quicksand', sans-serif; font-weight: 700;
@@ -177,7 +174,7 @@
             backdrop-filter: blur(4px);
         }
         .btn:hover { 
-            background-color: white; color: var(--deep-red); transform: translateY(-2px); 
+            background-color: var(--gold); color: #141e30; transform: translateY(-2px); border-color: var(--gold);
         }
         
         #close-btn { 
@@ -186,9 +183,9 @@
             cursor: pointer; transition: 0.2s; 
             font-family: sans-serif; font-weight: 100;
         }
-        #close-btn:hover { color: white; }
+        #close-btn:hover { color: white; transform: rotate(90deg); }
 
-        /* --- PRINT AREA (Preserved & Protected) --- */
+        /* --- PRINT AREA --- */
         #print-area { display: none; } 
         @media print {
             @page { size: landscape; margin: 0; }
@@ -387,10 +384,9 @@
             giftBox.classList.add('gift-opened');
             setTimeout(() => {
                 splashScreen.style.opacity = '0';
-                // Wait for fade out to finish before hiding/showing content
                 setTimeout(() => {
                     splashScreen.style.visibility = 'hidden';
-                    body.style.overflow = 'auto'; // Enable scroll
+                    body.style.overflow = 'auto'; 
                 }, 800);
                 
                 mainContent.style.opacity = '1';
@@ -404,15 +400,14 @@
                 snowflake.classList.add('snowflake');
                 snowflake.innerText = '❄'; 
                 
-                // Randomized positions
                 snowflake.style.left = Math.random() * 100 + 'vw'; 
-                snowflake.style.animationDuration = Math.random() * 3 + 4 + 's'; // Slower: 4-7s
-                snowflake.style.opacity = Math.random() * 0.5 + 0.3; // Subtler opacity
+                snowflake.style.animationDuration = Math.random() * 3 + 4 + 's'; 
+                snowflake.style.opacity = Math.random() * 0.5 + 0.3; 
                 snowflake.style.fontSize = Math.random() * 10 + 10 + 'px'; 
                 
                 document.body.appendChild(snowflake);
                 setTimeout(() => { snowflake.remove(); }, 7000);
-            }, 200); // Less frequent snow
+            }, 200); 
         }
 
         const lightbox = document.getElementById('lightbox');
