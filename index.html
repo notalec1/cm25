@@ -23,7 +23,7 @@
             width: 100vw;
         }
 
-        /* --- SNOWFLAKE STYLES --- */
+        /* --- SNOWFLAKES --- */
         .snowflake {
             position: fixed; top: -10px; color: #fff; font-size: 1em;
             font-family: Arial, sans-serif; text-shadow: 0 0 5px #000;
@@ -68,33 +68,58 @@
             border: 2px solid #c92a42;
         }
         h1 { font-family: 'Mountains of Christmas', cursive; font-size: 3rem; color: #c92a42; margin: 0; }
-        .scroll-container { width: 100%; display: flex; flex-direction: column; gap: 20px; padding: 20px 0; }
-        .scroll-row { display: flex; overflow: hidden; position: relative; width: 100%; }
+        
+        /* THE FIX: Adjusted gaps and padding */
+        .scroll-container { 
+            width: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; /* Reduced gap between rows since padding adds space */
+            padding: 20px 0; 
+        }
+        
+        .scroll-row { 
+            display: flex; 
+            overflow: hidden; 
+            position: relative; 
+            width: 100%; 
+            /* THE CRITICAL FIX: Add padding so hover zoom doesn't get clipped */
+            padding-top: 25px;
+            padding-bottom: 25px;
+            /* Negative margin to pull rows closer if they feel too far apart */
+            margin-top: -15px;
+            margin-bottom: -15px;
+        }
+        
         .scroll-row:hover .scroll-track { animation-play-state: paused; }
-        .scroll-track { display: flex; gap: 20px; width: max-content; }
+        .scroll-track { display: flex; gap: 20px; width: max-content; padding-left: 20px; }
+        
         .img-circle {
             width: 180px; height: 180px; border-radius: 50%; object-fit: cover;
             border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             transition: transform 0.3s; cursor: pointer;
             position: relative; z-index: 5;
         }
-        .img-circle:hover { transform: scale(1.1); z-index: 6; border-color: #ffd700; }
-        .move-left { animation: scrollLeft 120s linear infinite; } /* Slowed down for large amount of photos */
+        .img-circle:hover { 
+            transform: scale(1.15); /* Slightly bigger zoom */
+            z-index: 6; 
+            border-color: #ffd700; 
+        }
+        
+        .move-left { animation: scrollLeft 120s linear infinite; }
         .move-right { animation: scrollRight 140s linear infinite; }
 
         @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes scrollRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
-        /* --- LIGHTBOX & BUTTONS --- */
+        /* --- LIGHTBOX --- */
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); z-index: 10000;
-            display: flex; flex-direction: column; 
-            justify-content: center; align-items: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; visibility: hidden; transition: opacity 0.3s ease; backdrop-filter: blur(5px);
         }
         #lightbox.active { opacity: 1; visibility: visible; }
-        
         .lightbox-frame {
             position: relative; padding: 15px;
             background: repeating-linear-gradient(45deg, #ffffff, #ffffff 10px, #c92a42 10px, #c92a42 20px);
@@ -103,7 +128,6 @@
         }
         .lightbox-frame::after { content: "🌿"; position: absolute; top: -20px; right: -20px; font-size: 3rem; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3)); }
         #lightbox-img { display: block; max-width: 100%; max-height: 65vh; border-radius: 5px; border: 4px solid white; }
-        
         .action-buttons { display: flex; gap: 15px; margin-top: 20px; }
         .btn {
             background-color: white; border: none; padding: 10px 20px;
@@ -115,9 +139,9 @@
         .btn:hover { transform: scale(1.1); background-color: #ffd700; color: #333; }
         #close-btn { position: absolute; top: 20px; right: 30px; font-size: 3rem; color: white; cursor: pointer; transition: transform 0.2s; }
         #close-btn:hover { transform: scale(1.2) rotate(90deg); color: #ffd700; }
-        #print-area { display: none; } 
 
-        /* --- PRINT STYLES --- */
+        /* --- PRINT --- */
+        #print-area { display: none; } 
         @media print {
             @page { size: landscape; margin: 0; }
             #splash-screen, #main-content, #lightbox, .snowflake { display: none !important; height: 0; width: 0; overflow: hidden; }
@@ -136,12 +160,12 @@
             h1 { font-size: 1.5rem; }
             .lightbox-frame { max-width: 95%; }
             .action-buttons { flex-wrap: wrap; justify-content: center; }
+            .scroll-row { padding-top: 15px; padding-bottom: 15px; } /* Less padding on mobile */
         }
     </style>
 </head>
 <body>
 
-    <!-- === SPLASH SCREEN === -->
     <div id="splash-screen">
         <div class="gift-container" id="gift-box">
             <div class="gift-lid"><div class="ribbon-vertical"></div></div>
@@ -150,15 +174,13 @@
         <p class="click-text">Tap to open!</p>
     </div>
 
-    <!-- === MAIN GALLERY === -->
     <div id="main-content">
         <div class="header-overlay"><h1>Christmas 2025</h1></div>
         <div class="scroll-container">
             
-            <!-- ROW 1 (Photos 1 - 17) -->
+            <!-- ROW 1 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
-                    <!-- SET 1 -->
                     <img src="https://picsum.photos/400?random=1" class="img-circle">
                     <img src="https://picsum.photos/400?random=2" class="img-circle">
                     <img src="https://picsum.photos/400?random=3" class="img-circle">
@@ -176,8 +198,7 @@
                     <img src="https://picsum.photos/400?random=15" class="img-circle">
                     <img src="https://picsum.photos/400?random=16" class="img-circle">
                     <img src="https://picsum.photos/400?random=17" class="img-circle">
-                    
-                    <!-- DUPLICATE (REQUIRED FOR INFINITE LOOP) -->
+                    <!-- Dupes -->
                     <img src="https://picsum.photos/400?random=1" class="img-circle">
                     <img src="https://picsum.photos/400?random=2" class="img-circle">
                     <img src="https://picsum.photos/400?random=3" class="img-circle">
@@ -198,10 +219,9 @@
                 </div>
             </div>
 
-            <!-- ROW 2 (Photos 18 - 34) -->
+            <!-- ROW 2 -->
             <div class="scroll-row">
                 <div class="scroll-track move-right">
-                    <!-- SET 2 -->
                     <img src="https://picsum.photos/400?random=18" class="img-circle">
                     <img src="https://picsum.photos/400?random=19" class="img-circle">
                     <img src="https://picsum.photos/400?random=20" class="img-circle">
@@ -219,8 +239,7 @@
                     <img src="https://picsum.photos/400?random=32" class="img-circle">
                     <img src="https://picsum.photos/400?random=33" class="img-circle">
                     <img src="https://picsum.photos/400?random=34" class="img-circle">
-
-                    <!-- DUPLICATE -->
+                    <!-- Dupes -->
                     <img src="https://picsum.photos/400?random=18" class="img-circle">
                     <img src="https://picsum.photos/400?random=19" class="img-circle">
                     <img src="https://picsum.photos/400?random=20" class="img-circle">
@@ -241,10 +260,9 @@
                 </div>
             </div>
 
-            <!-- ROW 3 (Photos 35 - 50) -->
+            <!-- ROW 3 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
-                    <!-- SET 3 -->
                     <img src="https://picsum.photos/400?random=35" class="img-circle">
                     <img src="https://picsum.photos/400?random=36" class="img-circle">
                     <img src="https://picsum.photos/400?random=37" class="img-circle">
@@ -261,8 +279,7 @@
                     <img src="https://picsum.photos/400?random=48" class="img-circle">
                     <img src="https://picsum.photos/400?random=49" class="img-circle">
                     <img src="https://picsum.photos/400?random=50" class="img-circle">
-
-                    <!-- DUPLICATE -->
+                    <!-- Dupes -->
                     <img src="https://picsum.photos/400?random=35" class="img-circle">
                     <img src="https://picsum.photos/400?random=36" class="img-circle">
                     <img src="https://picsum.photos/400?random=37" class="img-circle">
@@ -285,7 +302,6 @@
         </div>
     </div>
 
-    <!-- === LIGHTBOX === -->
     <div id="lightbox">
         <div id="close-btn">&times;</div>
         <div class="lightbox-frame">
@@ -298,7 +314,6 @@
         </div>
     </div>
 
-    <!-- === HIDDEN PRINT AREA === -->
     <div id="print-area">
         <div class="print-card-content">
             <div class="print-image-container">
@@ -311,7 +326,6 @@
         </div>
     </div>
 
-    <!-- === JAVASCRIPT === -->
     <script>
         const giftBox = document.getElementById('gift-box');
         const splashScreen = document.getElementById('splash-screen');
@@ -393,6 +407,5 @@
             window.print(); 
         });
     </script>
-
 </body>
 </html>
