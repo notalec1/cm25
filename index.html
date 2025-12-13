@@ -12,7 +12,6 @@
             margin: 0;
             padding: 0;
             background-color: #d45d79; 
-            /* Subtle radial gradient pattern */
             background-image: 
                 radial-gradient(white 15%, transparent 16%),
                 radial-gradient(white 15%, transparent 16%);
@@ -26,17 +25,10 @@
 
         /* --- SNOWFLAKE STYLES --- */
         .snowflake {
-            position: fixed;
-            top: -10px;
-            color: #fff;
-            font-size: 1em;
-            font-family: Arial, sans-serif; /* simple font for the character */
-            text-shadow: 0 0 5px #000;
-            user-select: none;
-            z-index: 1; /* Behind the lightbox, in front of background */
-            pointer-events: none; /* Let clicks pass through */
-            animation-name: fall;
-            animation-timing-function: linear;
+            position: fixed; top: -10px; color: #fff; font-size: 1em;
+            font-family: Arial, sans-serif; text-shadow: 0 0 5px #000;
+            user-select: none; z-index: 1; pointer-events: none;
+            animation-name: fall; animation-timing-function: linear;
         }
 
         @keyframes fall {
@@ -84,11 +76,12 @@
             width: 180px; height: 180px; border-radius: 50%; object-fit: cover;
             border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             transition: transform 0.3s; cursor: pointer;
-            position: relative; z-index: 5; /* Ensure images are above snow */
+            position: relative; z-index: 5;
         }
         .img-circle:hover { transform: scale(1.1); z-index: 6; border-color: #ffd700; }
-        .move-left { animation: scrollLeft 35s linear infinite; }
-        .move-right { animation: scrollRight 40s linear infinite; }
+        .move-left { animation: scrollLeft 120s linear infinite; } /* Slowed down for large amount of photos */
+        .move-right { animation: scrollRight 140s linear infinite; }
+
         @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes scrollRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
@@ -111,9 +104,7 @@
         .lightbox-frame::after { content: "🌿"; position: absolute; top: -20px; right: -20px; font-size: 3rem; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3)); }
         #lightbox-img { display: block; max-width: 100%; max-height: 65vh; border-radius: 5px; border: 4px solid white; }
         
-        .action-buttons {
-            display: flex; gap: 15px; margin-top: 20px;
-        }
+        .action-buttons { display: flex; gap: 15px; margin-top: 20px; }
         .btn {
             background-color: white; border: none; padding: 10px 20px;
             border-radius: 30px; font-family: 'Quicksand', sans-serif; font-weight: bold;
@@ -122,110 +113,22 @@
             color: #c92a42; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .btn:hover { transform: scale(1.1); background-color: #ffd700; color: #333; }
-        
         #close-btn { position: absolute; top: 20px; right: 30px; font-size: 3rem; color: white; cursor: pointer; transition: transform 0.2s; }
         #close-btn:hover { transform: scale(1.2) rotate(90deg); color: #ffd700; }
-
-        /* --- HIDDEN PRINT AREA --- */
         #print-area { display: none; } 
 
-        /* =========================================
-           PRINT STYLES - ROBUST & BULLETPROOF
-           ========================================= */
+        /* --- PRINT STYLES --- */
         @media print {
-            @page {
-                size: landscape;
-                margin: 0;
-            }
-
-            /* Hide Web UI & Snowflakes */
-            #splash-screen, #main-content, #lightbox, .snowflake { 
-                display: none !important; 
-                height: 0; width: 0; overflow: hidden;
-            }
-
-            /* Body Setup for A4 */
-            body {
-                background: white !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 297mm;
-                height: 210mm;
-                overflow: hidden !important;
-                display: block;
-            }
-
-            /* The Flex Card */
-            #print-area {
-                display: flex !important;
-                flex-direction: row; 
-                align-items: center;
-                justify-content: center;
-                position: absolute;
-                top: 0; left: 0;
-                width: 297mm;
-                height: 210mm;
-                box-sizing: border-box;
-                padding: 15mm; 
-            }
-
-            .print-card-content {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                height: 100%;
-                border: 4px double #c92a42; 
-                border-radius: 20px;
-                padding: 20px;
-                box-sizing: border-box;
-            }
-
-            .print-image-container {
-                width: 55%; 
-                height: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            #print-img-target {
-                max-width: 100%;
-                max-height: 100%;
-                width: auto;
-                height: auto;
-                object-fit: contain;
-                border-radius: 10px;
-                border: 2px solid #eee;
-                box-shadow: none; 
-            }
-
-            .print-text-container {
-                width: 45%;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                text-align: center;
-                font-family: 'Dancing Script', cursive;
-            }
-
-            .print-title {
-                font-size: 5rem;
-                line-height: 1;
-                margin-bottom: 20px;
-                color: #b22222 !important; 
-                background: none !important;
-                -webkit-text-fill-color: #b22222 !important;
-                text-shadow: 2px 2px 0px #eee; 
-            }
-
-            .print-year {
-                font-size: 3.5rem;
-                color: #2e8b57 !important;
-                font-weight: bold;
-                -webkit-print-color-adjust: exact !important;
-            }
+            @page { size: landscape; margin: 0; }
+            #splash-screen, #main-content, #lightbox, .snowflake { display: none !important; height: 0; width: 0; overflow: hidden; }
+            body { background: white !important; margin: 0 !important; padding: 0 !important; width: 297mm; height: 210mm; overflow: hidden !important; display: block; }
+            #print-area { display: flex !important; flex-direction: row; align-items: center; justify-content: center; position: absolute; top: 0; left: 0; width: 297mm; height: 210mm; box-sizing: border-box; padding: 15mm; }
+            .print-card-content { display: flex; flex-direction: row; width: 100%; height: 100%; border: 4px double #c92a42; border-radius: 20px; padding: 20px; box-sizing: border-box; }
+            .print-image-container { width: 55%; height: 100%; display: flex; align-items: center; justify-content: center; }
+            #print-img-target { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 10px; border: 2px solid #eee; box-shadow: none; }
+            .print-text-container { width: 45%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-family: 'Dancing Script', cursive; }
+            .print-title { font-size: 5rem; line-height: 1; margin-bottom: 20px; color: #b22222 !important; background: none !important; -webkit-text-fill-color: #b22222 !important; text-shadow: 2px 2px 0px #eee; }
+            .print-year { font-size: 3.5rem; color: #2e8b57 !important; font-weight: bold; -webkit-print-color-adjust: exact !important; }
         }
 
         @media (max-width: 768px) {
@@ -238,7 +141,7 @@
 </head>
 <body>
 
-    <!-- === PART 1: SPLASH SCREEN === -->
+    <!-- === SPLASH SCREEN === -->
     <div id="splash-screen">
         <div class="gift-container" id="gift-box">
             <div class="gift-lid"><div class="ribbon-vertical"></div></div>
@@ -247,56 +150,142 @@
         <p class="click-text">Tap to open!</p>
     </div>
 
-    <!-- === PART 2: MAIN GALLERY === -->
+    <!-- === MAIN GALLERY === -->
     <div id="main-content">
         <div class="header-overlay"><h1>Christmas 2025</h1></div>
         <div class="scroll-container">
-            <!-- ROW 1 -->
+            
+            <!-- ROW 1 (Photos 1 - 17) -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
-                    <img src="images/IMG_3170.jpeg" class="img-circle">
-                    <img src="images/IMG_3171.jpeg" class="img-circle">
-                    <img src="images/IMG_3172.jpeg" class="img-circle">
-                    <img src="images/IMG_3173.jpeg" class="img-circle">
-                    <!-- Duplicate -->
-                    <img src="images/IMG_3170.jpeg" class="img-circle">
-                    <img src="images/IMG_3171.jpeg" class="img-circle">
-                    <img src="images/IMG_3172.jpeg" class="img-circle">
-                    <img src="images/IMG_3173.jpeg" class="img-circle">
+                    <!-- SET 1 -->
+                    <img src="https://picsum.photos/400?random=1" class="img-circle">
+                    <img src="https://picsum.photos/400?random=2" class="img-circle">
+                    <img src="https://picsum.photos/400?random=3" class="img-circle">
+                    <img src="https://picsum.photos/400?random=4" class="img-circle">
+                    <img src="https://picsum.photos/400?random=5" class="img-circle">
+                    <img src="https://picsum.photos/400?random=6" class="img-circle">
+                    <img src="https://picsum.photos/400?random=7" class="img-circle">
+                    <img src="https://picsum.photos/400?random=8" class="img-circle">
+                    <img src="https://picsum.photos/400?random=9" class="img-circle">
+                    <img src="https://picsum.photos/400?random=10" class="img-circle">
+                    <img src="https://picsum.photos/400?random=11" class="img-circle">
+                    <img src="https://picsum.photos/400?random=12" class="img-circle">
+                    <img src="https://picsum.photos/400?random=13" class="img-circle">
+                    <img src="https://picsum.photos/400?random=14" class="img-circle">
+                    <img src="https://picsum.photos/400?random=15" class="img-circle">
+                    <img src="https://picsum.photos/400?random=16" class="img-circle">
+                    <img src="https://picsum.photos/400?random=17" class="img-circle">
+                    
+                    <!-- DUPLICATE (REQUIRED FOR INFINITE LOOP) -->
+                    <img src="https://picsum.photos/400?random=1" class="img-circle">
+                    <img src="https://picsum.photos/400?random=2" class="img-circle">
+                    <img src="https://picsum.photos/400?random=3" class="img-circle">
+                    <img src="https://picsum.photos/400?random=4" class="img-circle">
+                    <img src="https://picsum.photos/400?random=5" class="img-circle">
+                    <img src="https://picsum.photos/400?random=6" class="img-circle">
+                    <img src="https://picsum.photos/400?random=7" class="img-circle">
+                    <img src="https://picsum.photos/400?random=8" class="img-circle">
+                    <img src="https://picsum.photos/400?random=9" class="img-circle">
+                    <img src="https://picsum.photos/400?random=10" class="img-circle">
+                    <img src="https://picsum.photos/400?random=11" class="img-circle">
+                    <img src="https://picsum.photos/400?random=12" class="img-circle">
+                    <img src="https://picsum.photos/400?random=13" class="img-circle">
+                    <img src="https://picsum.photos/400?random=14" class="img-circle">
+                    <img src="https://picsum.photos/400?random=15" class="img-circle">
+                    <img src="https://picsum.photos/400?random=16" class="img-circle">
+                    <img src="https://picsum.photos/400?random=17" class="img-circle">
                 </div>
             </div>
-            <!-- ROW 2 -->
+
+            <!-- ROW 2 (Photos 18 - 34) -->
             <div class="scroll-row">
                 <div class="scroll-track move-right">
-                    <img src="images/IMG_3174.jpeg" class="img-circle">
-                    <img src="images/IMG_3175.jpeg" class="img-circle">
-                    <img src="images/IMG_3176.jpeg" class="img-circle">
-                    <img src="images/IMG_3174.jpeg" class="img-circle"> 
-                    <!-- Duplicate -->
-                    <img src="images/IMG_3174.jpeg" class="img-circle">
-                    <img src="images/IMG_3175.jpeg" class="img-circle">
-                    <img src="images/IMG_3176.jpeg" class="img-circle">
-                    <img src="images/IMG_3174.jpeg" class="img-circle">
+                    <!-- SET 2 -->
+                    <img src="https://picsum.photos/400?random=18" class="img-circle">
+                    <img src="https://picsum.photos/400?random=19" class="img-circle">
+                    <img src="https://picsum.photos/400?random=20" class="img-circle">
+                    <img src="https://picsum.photos/400?random=21" class="img-circle">
+                    <img src="https://picsum.photos/400?random=22" class="img-circle">
+                    <img src="https://picsum.photos/400?random=23" class="img-circle">
+                    <img src="https://picsum.photos/400?random=24" class="img-circle">
+                    <img src="https://picsum.photos/400?random=25" class="img-circle">
+                    <img src="https://picsum.photos/400?random=26" class="img-circle">
+                    <img src="https://picsum.photos/400?random=27" class="img-circle">
+                    <img src="https://picsum.photos/400?random=28" class="img-circle">
+                    <img src="https://picsum.photos/400?random=29" class="img-circle">
+                    <img src="https://picsum.photos/400?random=30" class="img-circle">
+                    <img src="https://picsum.photos/400?random=31" class="img-circle">
+                    <img src="https://picsum.photos/400?random=32" class="img-circle">
+                    <img src="https://picsum.photos/400?random=33" class="img-circle">
+                    <img src="https://picsum.photos/400?random=34" class="img-circle">
+
+                    <!-- DUPLICATE -->
+                    <img src="https://picsum.photos/400?random=18" class="img-circle">
+                    <img src="https://picsum.photos/400?random=19" class="img-circle">
+                    <img src="https://picsum.photos/400?random=20" class="img-circle">
+                    <img src="https://picsum.photos/400?random=21" class="img-circle">
+                    <img src="https://picsum.photos/400?random=22" class="img-circle">
+                    <img src="https://picsum.photos/400?random=23" class="img-circle">
+                    <img src="https://picsum.photos/400?random=24" class="img-circle">
+                    <img src="https://picsum.photos/400?random=25" class="img-circle">
+                    <img src="https://picsum.photos/400?random=26" class="img-circle">
+                    <img src="https://picsum.photos/400?random=27" class="img-circle">
+                    <img src="https://picsum.photos/400?random=28" class="img-circle">
+                    <img src="https://picsum.photos/400?random=29" class="img-circle">
+                    <img src="https://picsum.photos/400?random=30" class="img-circle">
+                    <img src="https://picsum.photos/400?random=31" class="img-circle">
+                    <img src="https://picsum.photos/400?random=32" class="img-circle">
+                    <img src="https://picsum.photos/400?random=33" class="img-circle">
+                    <img src="https://picsum.photos/400?random=34" class="img-circle">
                 </div>
             </div>
-            <!-- ROW 3 -->
+
+            <!-- ROW 3 (Photos 35 - 50) -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
-                    <img src="images/IMG_3177.jpeg" class="img-circle">
-                    <img src="images/IMG_3178.jpeg" class="img-circle">
-                    <img src="images/IMG_3179.jpeg" class="img-circle">
-                    <img src="images/IMG_3177.jpeg" class="img-circle"> 
-                    <!-- Duplicate -->
-                    <img src="images/IMG_3177.jpeg" class="img-circle">
-                    <img src="images/IMG_3178.jpeg" class="img-circle">
-                    <img src="images/IMG_3179.jpeg" class="img-circle">
-                    <img src="images/IMG_3177.jpeg" class="img-circle">
+                    <!-- SET 3 -->
+                    <img src="https://picsum.photos/400?random=35" class="img-circle">
+                    <img src="https://picsum.photos/400?random=36" class="img-circle">
+                    <img src="https://picsum.photos/400?random=37" class="img-circle">
+                    <img src="https://picsum.photos/400?random=38" class="img-circle">
+                    <img src="https://picsum.photos/400?random=39" class="img-circle">
+                    <img src="https://picsum.photos/400?random=40" class="img-circle">
+                    <img src="https://picsum.photos/400?random=41" class="img-circle">
+                    <img src="https://picsum.photos/400?random=42" class="img-circle">
+                    <img src="https://picsum.photos/400?random=43" class="img-circle">
+                    <img src="https://picsum.photos/400?random=44" class="img-circle">
+                    <img src="https://picsum.photos/400?random=45" class="img-circle">
+                    <img src="https://picsum.photos/400?random=46" class="img-circle">
+                    <img src="https://picsum.photos/400?random=47" class="img-circle">
+                    <img src="https://picsum.photos/400?random=48" class="img-circle">
+                    <img src="https://picsum.photos/400?random=49" class="img-circle">
+                    <img src="https://picsum.photos/400?random=50" class="img-circle">
+
+                    <!-- DUPLICATE -->
+                    <img src="https://picsum.photos/400?random=35" class="img-circle">
+                    <img src="https://picsum.photos/400?random=36" class="img-circle">
+                    <img src="https://picsum.photos/400?random=37" class="img-circle">
+                    <img src="https://picsum.photos/400?random=38" class="img-circle">
+                    <img src="https://picsum.photos/400?random=39" class="img-circle">
+                    <img src="https://picsum.photos/400?random=40" class="img-circle">
+                    <img src="https://picsum.photos/400?random=41" class="img-circle">
+                    <img src="https://picsum.photos/400?random=42" class="img-circle">
+                    <img src="https://picsum.photos/400?random=43" class="img-circle">
+                    <img src="https://picsum.photos/400?random=44" class="img-circle">
+                    <img src="https://picsum.photos/400?random=45" class="img-circle">
+                    <img src="https://picsum.photos/400?random=46" class="img-circle">
+                    <img src="https://picsum.photos/400?random=47" class="img-circle">
+                    <img src="https://picsum.photos/400?random=48" class="img-circle">
+                    <img src="https://picsum.photos/400?random=49" class="img-circle">
+                    <img src="https://picsum.photos/400?random=50" class="img-circle">
                 </div>
             </div>
+
         </div>
     </div>
 
-    <!-- === PART 3: LIGHTBOX === -->
+    <!-- === LIGHTBOX === -->
     <div id="lightbox">
         <div id="close-btn">&times;</div>
         <div class="lightbox-frame">
@@ -309,7 +298,7 @@
         </div>
     </div>
 
-    <!-- === PART 4: HIDDEN PRINT LAYOUT === -->
+    <!-- === HIDDEN PRINT AREA === -->
     <div id="print-area">
         <div class="print-card-content">
             <div class="print-image-container">
@@ -329,40 +318,30 @@
         const mainContent = document.getElementById('main-content');
         const body = document.body;
 
-        // --- Splash Screen Logic ---
         giftBox.addEventListener('click', () => {
             giftBox.classList.add('gift-opened');
             setTimeout(() => {
                 splashScreen.classList.add('fade-out');
                 mainContent.style.opacity = '1';
                 body.style.overflow = 'auto'; 
-                startSnow(); // Start snowing when gift is opened
+                startSnow(); 
             }, 500);
         });
 
-        // --- Snow Logic ---
         function startSnow() {
             setInterval(() => {
                 const snowflake = document.createElement('div');
                 snowflake.classList.add('snowflake');
-                
-                // Randomize Snowflake Properties
                 snowflake.innerText = '❄'; 
-                snowflake.style.left = Math.random() * 100 + 'vw'; // Random horizontal pos
-                snowflake.style.animationDuration = Math.random() * 3 + 2 + 's'; // Random speed (2-5s)
-                snowflake.style.opacity = Math.random(); // Random opacity
-                snowflake.style.fontSize = Math.random() * 10 + 10 + 'px'; // Random size
-
+                snowflake.style.left = Math.random() * 100 + 'vw'; 
+                snowflake.style.animationDuration = Math.random() * 3 + 2 + 's'; 
+                snowflake.style.opacity = Math.random(); 
+                snowflake.style.fontSize = Math.random() * 10 + 10 + 'px'; 
                 document.body.appendChild(snowflake);
-
-                // Remove snowflake after it falls to save memory
-                setTimeout(() => {
-                    snowflake.remove();
-                }, 5000);
-            }, 100); // Create a new snowflake every 100ms
+                setTimeout(() => { snowflake.remove(); }, 5000);
+            }, 100); 
         }
 
-        // --- Lightbox & Buttons ---
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const closeBtn = document.getElementById('close-btn');
