@@ -18,34 +18,21 @@
         }
 
         /* --- BASE STYLES --- */
-        /* FIX 1: The background is now a fixed pseudo-element so it NEVER repeats or cuts off */
         body::before {
-            content: "";
-            position: fixed;
-            top: 0; 
-            left: 0;
-            width: 100%; 
-            height: 100%;
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(ellipse at top, var(--bg-night-bot) 0%, var(--bg-night-top) 100%);
-            z-index: -2; /* Stays behind everything */
+            z-index: -2;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Quicksand', sans-serif;
-            color: white;
-            min-height: 100vh;
-            /* FIX 2: Force scrollbar track to be visible always to prevent header jumping */
-            overflow-y: scroll; 
-            overflow-x: hidden;
+            margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; color: white;
+            min-height: 100vh; overflow-y: scroll; overflow-x: hidden;
         }
 
         /* --- SNOWFLAKES --- */
         .snowflake {
             position: fixed; top: -10px; color: #fff; font-size: 1em;
-            font-family: Arial, sans-serif; 
-            user-select: none; z-index: -1; pointer-events: none;
+            font-family: Arial, sans-serif; user-select: none; z-index: -1; pointer-events: none;
             opacity: 0.9; text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
             animation-name: fall; animation-timing-function: linear;
         }
@@ -58,7 +45,6 @@
         /* --- SPLASH SCREEN --- */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            /* Matches background for seamless transition */
             background: radial-gradient(ellipse at top, var(--bg-night-bot) 0%, var(--bg-night-top) 100%);
             z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -71,8 +57,7 @@
         .click-text { 
             color: var(--gold); margin-top: 40px; font-size: 1.2rem; letter-spacing: 2px;
             font-family: 'Quicksand', sans-serif; text-transform: uppercase; font-weight: 700;
-            opacity: 0.9; animation: pulse 2s infinite; 
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            opacity: 0.9; animation: pulse 2s infinite; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
         .gift-lid { width: 140px; height: 35px; background-color: #ff4757; border-radius: 4px; position: relative; z-index: 2; box-shadow: 0 4px 15px var(--shadow); left: -10px; transition: transform 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
@@ -88,72 +73,40 @@
         #main-content {
             opacity: 0; transition: opacity 1.5s ease;
             display: flex; flex-direction: column; justify-content: center;
-            /* Ensure content sits above the fixed background */
-            position: relative; 
-            z-index: 1;
-            min-height: 100vh;
+            position: relative; z-index: 1; min-height: 100vh;
         }
 
-        /* Glass Header */
         .header-overlay {
             position: fixed; top: 40px; left: 50%; transform: translateX(-50%); z-index: 100;
-            padding: 15px 40px; border-radius: 20px;
-            text-align: center; 
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-            width: max-content;
+            padding: 15px 40px; border-radius: 20px; text-align: center; 
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column; align-items: center; gap: 10px; width: max-content;
         }
         
-        h1 { 
-            font-family: 'Mountains of Christmas', cursive; 
-            font-size: 3rem; color: white; margin: 0; 
-            text-shadow: 0 0 15px rgba(255,255,255,0.4);
-            white-space: nowrap;
-        }
+        h1 { font-family: 'Mountains of Christmas', cursive; font-size: 3rem; color: white; margin: 0; text-shadow: 0 0 15px rgba(255,255,255,0.4); white-space: nowrap; }
 
         .view-btn {
-            background-color: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: var(--gold);
-            font-family: 'Quicksand', sans-serif; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 1px;
-            padding: 8px 16px; border-radius: 20px;
-            cursor: pointer; transition: all 0.3s;
-            pointer-events: auto; 
-            font-size: 0.8rem;
+            background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: var(--gold);
+            font-family: 'Quicksand', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: all 0.3s;
+            pointer-events: auto; font-size: 0.8rem;
         }
         .view-btn:hover { background-color: var(--gold); color: #141e30; }
 
-        /* --- MARQUEE VIEW (Default) --- */
-        .scroll-container { 
-            width: 100%; display: flex; flex-direction: column; gap: 15px; padding: 20px 0; 
-            margin-top: 140px; /* Space for fixed header */
-        }
-        
-        .scroll-row { 
-            display: flex; overflow: hidden; position: relative; width: 100%; 
-            padding-top: 20px; padding-bottom: 20px; margin-top: -10px; margin-bottom: -10px;
-        }
-        
+        /* --- MARQUEE VIEW --- */
+        .scroll-container { width: 100%; display: flex; flex-direction: column; gap: 15px; padding: 20px 0; margin-top: 140px; }
+        .scroll-row { display: flex; overflow: hidden; position: relative; width: 100%; padding-top: 20px; padding-bottom: 20px; margin-top: -10px; margin-bottom: -10px; }
         .scroll-row:hover .scroll-track { animation-play-state: paused; }
         .scroll-track { display: flex; gap: 25px; width: max-content; padding-left: 25px; }
         
         .img-circle {
-            width: 180px; height: 180px; 
-            border-radius: 50%; object-fit: cover;
-            border: 3px solid rgba(255,255,255,0.9); 
-            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            width: 180px; height: 180px; border-radius: 50%; object-fit: cover;
+            border: 3px solid rgba(255,255,255,0.9); box-shadow: 0 5px 20px rgba(0,0,0,0.5);
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             cursor: pointer; position: relative; z-index: 5;
         }
-        
-        .img-circle:hover { 
-            transform: scale(1.12); z-index: 6; border-color: var(--gold); 
-            box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
-        }
+        .img-circle:hover { transform: scale(1.12); z-index: 6; border-color: var(--gold); box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); }
         
         .move-left { animation: scrollLeft 120s linear infinite; }
         .move-right { animation: scrollRight 140s linear infinite; }
@@ -161,53 +114,33 @@
         @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes scrollRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
-        /* --- GRID VIEW (Hidden by default) --- */
+        /* --- GRID VIEW --- */
         #library-grid {
-            display: none; 
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 180px 40px 40px 40px; 
-            width: 100%;
-            box-sizing: border-box;
-            max-width: 1400px;
-            margin: 0 auto;
+            display: none; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px; padding: 180px 40px 40px 40px; width: 100%; box-sizing: border-box;
+            max-width: 1400px; margin: 0 auto;
         }
-
         #library-grid.active { display: grid; }
-
         .grid-img {
-            width: 100%;
-            aspect-ratio: 1 / 1; 
-            object-fit: cover;
-            border-radius: 15px; 
-            border: 2px solid rgba(255,255,255,0.5);
-            cursor: pointer;
-            transition: all 0.3s;
+            width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 15px; 
+            border: 2px solid rgba(255,255,255,0.5); cursor: pointer; transition: all 0.3s;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-
-        .grid-img:hover {
-            transform: translateY(-5px);
-            border-color: var(--gold);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
+        .grid-img:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 
         /* --- LIGHTBOX --- */
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(10, 15, 30, 0.95); z-index: 10000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden; transition: opacity 0.3s ease; 
-            backdrop-filter: blur(5px);
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease; backdrop-filter: blur(5px);
         }
         #lightbox.active { opacity: 1; visibility: visible; }
-        
         .lightbox-frame {
             position: relative; padding: 10px; background: white;
             border-radius: 12px; box-shadow: 0 25px 60px rgba(0,0,0,0.8);
             max-width: 80%; max-height: 70vh; display: flex;
         }
-        
         #lightbox-img { display: block; max-width: 100%; max-height: 65vh; border-radius: 6px; }
         
         .action-buttons { display: flex; gap: 12px; margin-top: 25px; }
@@ -234,8 +167,7 @@
             @page { size: landscape; margin: 0; }
             #splash-screen, #main-content, #lightbox, .snowflake, .header-overlay { display: none !important; height: 0; width: 0; overflow: hidden; }
             body { background: white !important; margin: 0 !important; padding: 0 !important; width: 297mm; height: 210mm; overflow: hidden !important; display: block; }
-            body::before { display: none; } /* Hide the night background on print */
-            
+            body::before { display: none; }
             #print-area { display: flex !important; flex-direction: row; position: absolute; top: 0; left: 0; width: 297mm; height: 210mm; box-sizing: border-box; padding: 15mm; }
             .print-card-content { display: flex; flex-direction: row; width: 100%; height: 100%; border: 4px double #c92a42; border-radius: 20px; padding: 20px; box-sizing: border-box; }
             .print-image-container { width: 55%; height: 100%; display: flex; align-items: center; justify-content: center; }
@@ -275,7 +207,6 @@
 
         <!-- MARQUEE VIEW -->
         <div class="scroll-container">
-            <!-- ROW 1 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
                     <img src="https://picsum.photos/400?random=1" class="img-circle">
@@ -315,8 +246,6 @@
                     <img src="https://picsum.photos/400?random=17" class="img-circle">
                 </div>
             </div>
-
-            <!-- ROW 2 -->
             <div class="scroll-row">
                 <div class="scroll-track move-right">
                     <img src="https://picsum.photos/400?random=18" class="img-circle">
@@ -356,8 +285,6 @@
                     <img src="https://picsum.photos/400?random=34" class="img-circle">
                 </div>
             </div>
-
-            <!-- ROW 3 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
                     <img src="https://picsum.photos/400?random=35" class="img-circle">
@@ -397,7 +324,6 @@
             </div>
         </div>
 
-        <!-- GRID VIEW (Generated by JS) -->
         <div id="library-grid"></div>
 
     </div>
@@ -429,27 +355,43 @@
     </div>
 
     <script>
-        /* --- LOGIC --- */
         const giftBox = document.getElementById('gift-box');
         const splashScreen = document.getElementById('splash-screen');
         const mainContent = document.getElementById('main-content');
         const body = document.body;
+        const gridContainer = document.getElementById('library-grid');
 
-        // --- SPLASH SCREEN ---
+        // Check for Deep Link on Load
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const photoParam = urlParams.get('photo');
+
+            if (photoParam) {
+                // If deep link, skip splash animation immediately
+                splashScreen.style.display = 'none';
+                mainContent.style.opacity = '1';
+                body.style.overflow = 'auto'; 
+                startSnow();
+                populateGrid();
+                openLightbox(photoParam);
+            }
+        });
+
+        // --- SPLASH LOGIC ---
         giftBox.addEventListener('click', () => {
             giftBox.classList.add('gift-opened');
             setTimeout(() => {
                 splashScreen.style.opacity = '0';
                 setTimeout(() => {
                     splashScreen.style.visibility = 'hidden';
+                    body.style.overflow = 'auto'; 
                 }, 800);
                 mainContent.style.opacity = '1';
                 startSnow(); 
-                populateGrid(); // Populate grid once
+                populateGrid(); 
             }, 600);
         });
 
-        // --- SNOW ---
         function startSnow() {
             setInterval(() => {
                 const snowflake = document.createElement('div');
@@ -464,7 +406,7 @@
             }, 200); 
         }
 
-        // --- LIGHTBOX VARIABLES ---
+        // --- LIGHTBOX ---
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const closeBtn = document.getElementById('close-btn');
@@ -473,31 +415,43 @@
         const printBtn = document.getElementById('print-btn');
         const printImgTarget = document.getElementById('print-img-target');
 
-        // Function to open Lightbox
         function openLightbox(src) {
             lightboxImg.src = src; 
             printImgTarget.src = src; 
             lightbox.classList.add('active');
+
+            // Update URL
+            const url = new URL(window.location);
+            url.searchParams.set('photo', src);
+            window.history.pushState({}, '', url);
         }
 
-        // Add Click to Marquee Images
+        function closeLightboxFn() {
+            lightbox.classList.remove('active');
+            // Clean URL
+            const url = new URL(window.location);
+            url.searchParams.delete('photo');
+            window.history.pushState({}, '', url);
+        }
+
+        // Click Events
         document.querySelectorAll('.img-circle').forEach(img => {
             img.addEventListener('click', () => openLightbox(img.src));
         });
 
-        // --- GRID VIEW LOGIC ---
+        closeBtn.addEventListener('click', closeLightboxFn);
+        lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightboxFn(); });
+
+        // --- GRID & VIEW TOGGLE ---
         const viewBtn = document.getElementById('view-toggle');
         const scrollContainer = document.querySelector('.scroll-container');
-        const gridContainer = document.getElementById('library-grid');
         let isGridView = false;
 
         function populateGrid() {
             const uniqueSrcs = new Set();
-            // Get all images from marquee, but ensure unique URLs
-            document.querySelectorAll('.scroll-row img').forEach(img => {
-                uniqueSrcs.add(img.src);
-            });
-
+            document.querySelectorAll('.scroll-row img').forEach(img => uniqueSrcs.add(img.src));
+            
+            gridContainer.innerHTML = ''; // Clear previous if any
             uniqueSrcs.forEach(src => {
                 const img = document.createElement('img');
                 img.src = src;
@@ -509,25 +463,18 @@
 
         viewBtn.addEventListener('click', () => {
             isGridView = !isGridView;
-            
             if (isGridView) {
-                // Show Grid, Hide Marquee
                 scrollContainer.style.display = 'none';
                 gridContainer.classList.add('active');
                 viewBtn.innerText = "Back to Scroll";
             } else {
-                // Show Marquee, Hide Grid
                 scrollContainer.style.display = 'flex';
                 gridContainer.classList.remove('active');
                 viewBtn.innerText = "View Full Library";
             }
         });
 
-        // --- LIGHTBOX ACTIONS ---
-        const closeLightbox = () => { lightbox.classList.remove('active'); };
-        closeBtn.addEventListener('click', closeLightbox);
-        lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
-
+        // --- BUTTONS ---
         downloadBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             const link = document.createElement('a');
@@ -545,7 +492,7 @@
                     await navigator.share({
                         title: 'Christmas 2025 Photo',
                         text: 'Look at this memory!',
-                        url: window.location.href
+                        url: window.location.href // This URL now contains ?photo=...
                     });
                 } catch (err) { console.log('Error sharing:', err); }
             } else {
