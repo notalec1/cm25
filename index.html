@@ -82,15 +82,18 @@
             position: relative; z-index: 1; min-height: 100vh;
         }
 
+        /* Glass Header */
         .header-overlay {
             position: fixed; top: 40px; left: 50%; transform: translateX(-50%); z-index: 100;
             padding: 15px 40px; border-radius: 20px; text-align: center; 
             background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            display: flex; flex-direction: column; align-items: center; gap: 10px; width: max-content;
+            display: flex; flex-direction: column; align-items: center; gap: 15px; width: max-content;
         }
         
         h1 { font-family: 'Mountains of Christmas', cursive; font-size: 3rem; color: white; margin: 0; text-shadow: 0 0 15px rgba(255,255,255,0.4); white-space: nowrap; }
+
+        .header-buttons { display: flex; gap: 10px; }
 
         .view-btn {
             background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: var(--gold);
@@ -134,7 +137,7 @@
         }
         .grid-img:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 
-        /* --- LIGHTBOX --- */
+        /* --- LIGHTBOX (Single Photo) --- */
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(10, 15, 30, 0.95); z-index: 10000;
@@ -160,9 +163,6 @@
         }
         .btn:hover { background-color: var(--gold); color: #141e30; transform: translateY(-2px); border-color: var(--gold); }
         
-        /* Active Slideshow State */
-        .btn.playing { background-color: var(--deep-red); border-color: var(--deep-red); }
-
         #close-btn { 
             position: absolute; top: 30px; right: 40px; font-size: 2.5rem; 
             color: rgba(255,255,255,0.6); cursor: pointer; transition: 0.2s; 
@@ -170,11 +170,53 @@
         }
         #close-btn:hover { color: white; transform: rotate(90deg); }
 
+        /* --- FULLSCREEN SLIDESHOW OVERLAY --- */
+        #cinema-mode {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; z-index: 20000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.5s ease;
+        }
+        #cinema-mode.active { opacity: 1; visibility: visible; }
+
+        /* The Image */
+        #cinema-img {
+            max-width: 100%; max-height: 100%; width: 100%; height: 100%;
+            object-fit: contain; /* Ensures photo is not cropped */
+            transition: opacity 0.8s ease-in-out; /* Smooth crossfade feel */
+        }
+
+        /* Controls (Visible on hover/movement) */
+        #cinema-controls {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 15px;
+            background: rgba(20, 20, 20, 0.7);
+            padding: 15px 30px; border-radius: 40px;
+            backdrop-filter: blur(10px);
+            transition: opacity 0.5s;
+            opacity: 0; /* Hidden by default until hover */
+        }
+        
+        /* Show controls when mouse moves over container */
+        #cinema-mode:hover #cinema-controls { opacity: 1; }
+
+        .control-btn {
+            background: transparent; border: 1px solid rgba(255,255,255,0.3);
+            color: white; padding: 8px 15px; border-radius: 20px; cursor: pointer;
+            font-family: 'Quicksand', sans-serif; font-size: 0.9rem;
+        }
+        .control-btn.active { background: var(--gold); color: black; border-color: var(--gold); }
+        .control-btn:hover { border-color: white; }
+        
+        #exit-cinema {
+            background: var(--deep-red); border: none; font-weight: bold;
+        }
+
         /* --- PRINT AREA --- */
         #print-area { display: none; } 
         @media print {
             @page { size: landscape; margin: 0; }
-            #splash-screen, #main-content, #lightbox, .snowflake, .header-overlay { display: none !important; height: 0; width: 0; overflow: hidden; }
+            #splash-screen, #main-content, #lightbox, #cinema-mode, .snowflake, .header-overlay { display: none !important; height: 0; width: 0; overflow: hidden; }
             body { background: white !important; margin: 0 !important; padding: 0 !important; width: 297mm; height: 210mm; overflow: hidden !important; display: block; }
             body::before { display: none; }
             #print-area { display: flex !important; flex-direction: row; position: absolute; top: 0; left: 0; width: 297mm; height: 210mm; box-sizing: border-box; padding: 15mm; }
@@ -190,8 +232,9 @@
             .img-circle { width: 130px; height: 130px; }
             h1 { font-size: 2rem; }
             .header-overlay { top: 30px; padding: 10px 15px; width: 85%; }
-            .action-buttons { flex-wrap: wrap; justify-content: center; }
-            #library-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); padding: 160px 20px 20px 20px; }
+            .header-buttons { flex-direction: column; }
+            #library-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); padding: 180px 20px 20px 20px; }
+            #cinema-controls { width: 90%; flex-wrap: wrap; justify-content: center; bottom: 20px; }
         }
     </style>
 </head>
@@ -210,7 +253,10 @@
     <div id="main-content">
         <div class="header-overlay">
             <h1>Christmas 2025</h1>
-            <button class="view-btn" id="view-toggle">View Full Library</button>
+            <div class="header-buttons">
+                <button class="view-btn" id="start-cinema">▶ Slideshow</button>
+                <button class="view-btn" id="view-toggle">View Full Library</button>
+            </div>
         </div>
 
         <div class="scroll-container">
@@ -227,13 +273,6 @@
                     <img src="https://picsum.photos/400?random=8" class="img-circle">
                     <img src="https://picsum.photos/400?random=9" class="img-circle">
                     <img src="https://picsum.photos/400?random=10" class="img-circle">
-                    <img src="https://picsum.photos/400?random=11" class="img-circle">
-                    <img src="https://picsum.photos/400?random=12" class="img-circle">
-                    <img src="https://picsum.photos/400?random=13" class="img-circle">
-                    <img src="https://picsum.photos/400?random=14" class="img-circle">
-                    <img src="https://picsum.photos/400?random=15" class="img-circle">
-                    <img src="https://picsum.photos/400?random=16" class="img-circle">
-                    <img src="https://picsum.photos/400?random=17" class="img-circle">
                     <!-- Dupes -->
                     <img src="https://picsum.photos/400?random=1" class="img-circle">
                     <img src="https://picsum.photos/400?random=2" class="img-circle">
@@ -245,6 +284,11 @@
                     <img src="https://picsum.photos/400?random=8" class="img-circle">
                     <img src="https://picsum.photos/400?random=9" class="img-circle">
                     <img src="https://picsum.photos/400?random=10" class="img-circle">
+                </div>
+            </div>
+            <!-- ROW 2 -->
+            <div class="scroll-row">
+                <div class="scroll-track move-right">
                     <img src="https://picsum.photos/400?random=11" class="img-circle">
                     <img src="https://picsum.photos/400?random=12" class="img-circle">
                     <img src="https://picsum.photos/400?random=13" class="img-circle">
@@ -252,105 +296,75 @@
                     <img src="https://picsum.photos/400?random=15" class="img-circle">
                     <img src="https://picsum.photos/400?random=16" class="img-circle">
                     <img src="https://picsum.photos/400?random=17" class="img-circle">
-                </div>
-            </div>
-
-            <!-- ROW 2 -->
-            <div class="scroll-row">
-                <div class="scroll-track move-right">
                     <img src="https://picsum.photos/400?random=18" class="img-circle">
                     <img src="https://picsum.photos/400?random=19" class="img-circle">
                     <img src="https://picsum.photos/400?random=20" class="img-circle">
-                    <img src="https://picsum.photos/400?random=21" class="img-circle">
-                    <img src="https://picsum.photos/400?random=22" class="img-circle">
-                    <img src="https://picsum.photos/400?random=23" class="img-circle">
-                    <img src="https://picsum.photos/400?random=24" class="img-circle">
-                    <img src="https://picsum.photos/400?random=25" class="img-circle">
-                    <img src="https://picsum.photos/400?random=26" class="img-circle">
-                    <img src="https://picsum.photos/400?random=27" class="img-circle">
-                    <img src="https://picsum.photos/400?random=28" class="img-circle">
-                    <img src="https://picsum.photos/400?random=29" class="img-circle">
-                    <img src="https://picsum.photos/400?random=30" class="img-circle">
-                    <img src="https://picsum.photos/400?random=31" class="img-circle">
-                    <img src="https://picsum.photos/400?random=32" class="img-circle">
-                    <img src="https://picsum.photos/400?random=33" class="img-circle">
-                    <img src="https://picsum.photos/400?random=34" class="img-circle">
                     <!-- Dupes -->
+                    <img src="https://picsum.photos/400?random=11" class="img-circle">
+                    <img src="https://picsum.photos/400?random=12" class="img-circle">
+                    <img src="https://picsum.photos/400?random=13" class="img-circle">
+                    <img src="https://picsum.photos/400?random=14" class="img-circle">
+                    <img src="https://picsum.photos/400?random=15" class="img-circle">
+                    <img src="https://picsum.photos/400?random=16" class="img-circle">
+                    <img src="https://picsum.photos/400?random=17" class="img-circle">
                     <img src="https://picsum.photos/400?random=18" class="img-circle">
                     <img src="https://picsum.photos/400?random=19" class="img-circle">
                     <img src="https://picsum.photos/400?random=20" class="img-circle">
-                    <img src="https://picsum.photos/400?random=21" class="img-circle">
-                    <img src="https://picsum.photos/400?random=22" class="img-circle">
-                    <img src="https://picsum.photos/400?random=23" class="img-circle">
-                    <img src="https://picsum.photos/400?random=24" class="img-circle">
-                    <img src="https://picsum.photos/400?random=25" class="img-circle">
-                    <img src="https://picsum.photos/400?random=26" class="img-circle">
-                    <img src="https://picsum.photos/400?random=27" class="img-circle">
-                    <img src="https://picsum.photos/400?random=28" class="img-circle">
-                    <img src="https://picsum.photos/400?random=29" class="img-circle">
-                    <img src="https://picsum.photos/400?random=30" class="img-circle">
-                    <img src="https://picsum.photos/400?random=31" class="img-circle">
-                    <img src="https://picsum.photos/400?random=32" class="img-circle">
-                    <img src="https://picsum.photos/400?random=33" class="img-circle">
-                    <img src="https://picsum.photos/400?random=34" class="img-circle">
                 </div>
             </div>
-
             <!-- ROW 3 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
-                    <img src="https://picsum.photos/400?random=35" class="img-circle">
-                    <img src="https://picsum.photos/400?random=36" class="img-circle">
-                    <img src="https://picsum.photos/400?random=37" class="img-circle">
-                    <img src="https://picsum.photos/400?random=38" class="img-circle">
-                    <img src="https://picsum.photos/400?random=39" class="img-circle">
-                    <img src="https://picsum.photos/400?random=40" class="img-circle">
-                    <img src="https://picsum.photos/400?random=41" class="img-circle">
-                    <img src="https://picsum.photos/400?random=42" class="img-circle">
-                    <img src="https://picsum.photos/400?random=43" class="img-circle">
-                    <img src="https://picsum.photos/400?random=44" class="img-circle">
-                    <img src="https://picsum.photos/400?random=45" class="img-circle">
-                    <img src="https://picsum.photos/400?random=46" class="img-circle">
-                    <img src="https://picsum.photos/400?random=47" class="img-circle">
-                    <img src="https://picsum.photos/400?random=48" class="img-circle">
-                    <img src="https://picsum.photos/400?random=49" class="img-circle">
-                    <img src="https://picsum.photos/400?random=50" class="img-circle">
+                    <img src="https://picsum.photos/400?random=21" class="img-circle">
+                    <img src="https://picsum.photos/400?random=22" class="img-circle">
+                    <img src="https://picsum.photos/400?random=23" class="img-circle">
+                    <img src="https://picsum.photos/400?random=24" class="img-circle">
+                    <img src="https://picsum.photos/400?random=25" class="img-circle">
+                    <img src="https://picsum.photos/400?random=26" class="img-circle">
+                    <img src="https://picsum.photos/400?random=27" class="img-circle">
+                    <img src="https://picsum.photos/400?random=28" class="img-circle">
+                    <img src="https://picsum.photos/400?random=29" class="img-circle">
+                    <img src="https://picsum.photos/400?random=30" class="img-circle">
                     <!-- Dupes -->
-                    <img src="https://picsum.photos/400?random=35" class="img-circle">
-                    <img src="https://picsum.photos/400?random=36" class="img-circle">
-                    <img src="https://picsum.photos/400?random=37" class="img-circle">
-                    <img src="https://picsum.photos/400?random=38" class="img-circle">
-                    <img src="https://picsum.photos/400?random=39" class="img-circle">
-                    <img src="https://picsum.photos/400?random=40" class="img-circle">
-                    <img src="https://picsum.photos/400?random=41" class="img-circle">
-                    <img src="https://picsum.photos/400?random=42" class="img-circle">
-                    <img src="https://picsum.photos/400?random=43" class="img-circle">
-                    <img src="https://picsum.photos/400?random=44" class="img-circle">
-                    <img src="https://picsum.photos/400?random=45" class="img-circle">
-                    <img src="https://picsum.photos/400?random=46" class="img-circle">
-                    <img src="https://picsum.photos/400?random=47" class="img-circle">
-                    <img src="https://picsum.photos/400?random=48" class="img-circle">
-                    <img src="https://picsum.photos/400?random=49" class="img-circle">
-                    <img src="https://picsum.photos/400?random=50" class="img-circle">
+                    <img src="https://picsum.photos/400?random=21" class="img-circle">
+                    <img src="https://picsum.photos/400?random=22" class="img-circle">
+                    <img src="https://picsum.photos/400?random=23" class="img-circle">
+                    <img src="https://picsum.photos/400?random=24" class="img-circle">
+                    <img src="https://picsum.photos/400?random=25" class="img-circle">
+                    <img src="https://picsum.photos/400?random=26" class="img-circle">
+                    <img src="https://picsum.photos/400?random=27" class="img-circle">
+                    <img src="https://picsum.photos/400?random=28" class="img-circle">
+                    <img src="https://picsum.photos/400?random=29" class="img-circle">
+                    <img src="https://picsum.photos/400?random=30" class="img-circle">
                 </div>
             </div>
         </div>
 
         <div id="library-grid"></div>
-
     </div>
 
-    <!-- LIGHTBOX -->
+    <!-- LIGHTBOX (Standard) -->
     <div id="lightbox">
         <div id="close-btn">&times;</div>
         <div class="lightbox-frame">
             <img id="lightbox-img" src="" alt="Enlarged Christmas Photo">
         </div>
         <div class="action-buttons">
-            <button class="btn" id="slideshow-btn">▶️ Play</button>
             <button class="btn" id="download-btn">⬇️ Download</button>
             <button class="btn" id="share-btn">🔗 Share</button>
             <button class="btn" id="print-btn">🖨️ Print Card</button>
+        </div>
+    </div>
+
+    <!-- FULLSCREEN CINEMA MODE -->
+    <div id="cinema-mode">
+        <img id="cinema-img" src="" alt="Slideshow">
+        
+        <div id="cinema-controls">
+            <button class="control-btn" onclick="setSpeed(3000, this)" id="btn-3s">3s</button>
+            <button class="control-btn active" onclick="setSpeed(5000, this)" id="btn-5s">5s</button>
+            <button class="control-btn" onclick="setSpeed(10000, this)" id="btn-10s">10s</button>
+            <button class="control-btn" id="exit-cinema">Exit Slideshow</button>
         </div>
     </div>
 
@@ -368,21 +382,18 @@
     </div>
 
     <script>
+        // --- DATA & ELEMENTS ---
         const giftBox = document.getElementById('gift-box');
         const splashScreen = document.getElementById('splash-screen');
         const mainContent = document.getElementById('main-content');
         const body = document.body;
         const gridContainer = document.getElementById('library-grid');
-
-        // --- GLOBAL VARIABLES ---
+        
         let allImageSources = [];
-        let currentImageIndex = 0;
-        let slideshowInterval;
-        let isPlaying = false;
-
-        // Check for Deep Link on Load
+        
+        // --- ON LOAD ---
         window.addEventListener('load', () => {
-            collectAllImages(); // Gather images immediately
+            collectAllImages();
             const urlParams = new URLSearchParams(window.location.search);
             const photoParam = urlParams.get('photo');
 
@@ -396,7 +407,7 @@
             }
         });
 
-        // --- SPLASH LOGIC (TV Friendly) ---
+        // --- SPLASH LOGIC ---
         function openGift() {
             giftBox.classList.add('gift-opened');
             setTimeout(() => {
@@ -412,6 +423,7 @@
             if (e.key === 'Enter' || e.keyCode === 13) openGift();
         });
 
+        // --- SNOW LOGIC ---
         function startSnow() {
             setInterval(() => {
                 const snowflake = document.createElement('div');
@@ -433,7 +445,68 @@
             allImageSources = Array.from(uniqueSrcs);
         }
 
-        // --- LIGHTBOX & SLIDESHOW ---
+        // --- CINEMA MODE (FULLSCREEN SLIDESHOW) ---
+        const cinemaMode = document.getElementById('cinema-mode');
+        const cinemaImg = document.getElementById('cinema-img');
+        const exitCinemaBtn = document.getElementById('exit-cinema');
+        const startCinemaBtn = document.getElementById('start-cinema');
+        
+        let cinemaInterval;
+        let cinemaIndex = 0;
+        let cinemaSpeed = 5000; // Default 5s
+
+        startCinemaBtn.addEventListener('click', () => {
+            if (allImageSources.length === 0) collectAllImages();
+            cinemaMode.classList.add('active');
+            
+            // Go Fullscreen if supported
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(err => console.log(err));
+            }
+
+            runCinema();
+        });
+
+        function runCinema() {
+            // Initial Image
+            updateCinemaImage();
+            
+            // Start Loop
+            clearInterval(cinemaInterval);
+            cinemaInterval = setInterval(() => {
+                cinemaIndex = (cinemaIndex + 1) % allImageSources.length;
+                updateCinemaImage();
+            }, cinemaSpeed);
+        }
+
+        function updateCinemaImage() {
+            // Simple fade effect
+            cinemaImg.style.opacity = 0;
+            setTimeout(() => {
+                cinemaImg.src = allImageSources[cinemaIndex];
+                cinemaImg.style.opacity = 1;
+            }, 800); // Wait for fade out, then swap and fade in
+        }
+
+        function setSpeed(ms, btn) {
+            cinemaSpeed = ms;
+            // Update UI buttons
+            document.querySelectorAll('.control-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            // Restart with new speed
+            runCinema();
+        }
+        
+        // Expose setSpeed to HTML onclick
+        window.setSpeed = setSpeed;
+
+        exitCinemaBtn.addEventListener('click', () => {
+            cinemaMode.classList.remove('active');
+            clearInterval(cinemaInterval);
+            if (document.exitFullscreen) document.exitFullscreen();
+        });
+
+        // --- LIGHTBOX (STANDARD) ---
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const closeBtn = document.getElementById('close-btn');
@@ -441,69 +514,23 @@
         const shareBtn = document.getElementById('share-btn');
         const printBtn = document.getElementById('print-btn');
         const printImgTarget = document.getElementById('print-img-target');
-        const slideshowBtn = document.getElementById('slideshow-btn');
 
         function openLightbox(src) {
             lightboxImg.src = src; 
             printImgTarget.src = src; 
             lightbox.classList.add('active');
             
-            // Find index for slideshow
-            currentImageIndex = allImageSources.indexOf(src);
-            if(currentImageIndex === -1) currentImageIndex = 0;
-
             const url = new URL(window.location);
             url.searchParams.set('photo', src);
             window.history.pushState({}, '', url);
         }
 
         function closeLightboxFn() {
-            stopSlideshow(); // Stop music/loop if active
             lightbox.classList.remove('active');
             const url = new URL(window.location);
             url.searchParams.delete('photo');
             window.history.pushState({}, '', url);
         }
-
-        // Slideshow Functions
-        function toggleSlideshow() {
-            if (isPlaying) {
-                stopSlideshow();
-            } else {
-                startSlideshow();
-            }
-        }
-
-        function startSlideshow() {
-            isPlaying = true;
-            slideshowBtn.innerText = "⏸ Pause";
-            slideshowBtn.classList.add('playing');
-            
-            slideshowInterval = setInterval(() => {
-                currentImageIndex = (currentImageIndex + 1) % allImageSources.length;
-                const nextSrc = allImageSources[currentImageIndex];
-                lightboxImg.src = nextSrc;
-                printImgTarget.src = nextSrc;
-                
-                // Update URL silently
-                const url = new URL(window.location);
-                url.searchParams.set('photo', nextSrc);
-                window.history.replaceState({}, '', url);
-            }, 3000); // 3 Seconds per slide
-        }
-
-        function stopSlideshow() {
-            isPlaying = false;
-            slideshowBtn.innerText = "▶️ Play";
-            slideshowBtn.classList.remove('playing');
-            clearInterval(slideshowInterval);
-        }
-
-        // Listeners
-        slideshowBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleSlideshow();
-        });
 
         document.querySelectorAll('.img-circle').forEach(img => {
             img.addEventListener('click', () => openLightbox(img.src));
@@ -519,7 +546,6 @@
 
         function populateGrid() {
             if (allImageSources.length === 0) collectAllImages();
-            
             gridContainer.innerHTML = ''; 
             allImageSources.forEach(src => {
                 const img = document.createElement('img');
