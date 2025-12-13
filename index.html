@@ -136,7 +136,7 @@
         }
         .grid-img:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 
-        /* --- LIGHTBOX --- */
+        /* --- LIGHTBOX (Standard) --- */
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(10, 15, 30, 0.95); z-index: 10000;
@@ -169,27 +169,22 @@
         }
         #close-btn:hover { color: white; transform: rotate(90deg); }
 
-        /* --- FULLSCREEN SLIDESHOW OVERLAY --- */
+        /* --- FULLSCREEN CINEMA MODE --- */
         #cinema-mode {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: black; z-index: 20000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; visibility: hidden; transition: opacity 0.5s ease;
-            cursor: default; /* Changed by JS based on idle state */
+            cursor: default;
         }
         #cinema-mode.active { opacity: 1; visibility: visible; }
-
-        /* Hide cursor when idle */
         #cinema-mode.idle { cursor: none; }
 
-        /* The Image */
         #cinema-img {
             max-width: 100%; max-height: 100%; width: 100%; height: 100%;
-            object-fit: contain; 
-            transition: opacity 0.8s ease-in-out; 
+            object-fit: contain; transition: opacity 0.8s ease-in-out; 
         }
 
-        /* Controls */
         #cinema-controls {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
             display: flex; gap: 15px;
@@ -197,10 +192,8 @@
             padding: 15px 30px; border-radius: 40px;
             backdrop-filter: blur(10px);
             transition: opacity 0.5s ease;
-            opacity: 1; /* Default visible */
+            opacity: 1; 
         }
-        
-        /* Hide controls when parent is idle */
         #cinema-mode.idle #cinema-controls { opacity: 0; pointer-events: none; }
 
         .control-btn {
@@ -210,7 +203,6 @@
         }
         .control-btn.active { background: var(--gold); color: black; border-color: var(--gold); }
         .control-btn:hover { border-color: white; }
-        
         #exit-cinema { background: var(--deep-red); border: none; font-weight: bold; }
 
         /* --- PRINT AREA --- */
@@ -241,7 +233,6 @@
 </head>
 <body>
 
-    <!-- SPLASH SCREEN -->
     <div id="splash-screen">
         <div class="gift-container" id="gift-box" tabindex="0" role="button">
             <div class="gift-lid"><div class="ribbon-vertical"></div></div>
@@ -250,7 +241,6 @@
         <p class="click-text">Click to Open</p>
     </div>
 
-    <!-- MAIN GALLERY -->
     <div id="main-content">
         <div class="header-overlay">
             <h1>Christmas 2025</h1>
@@ -344,7 +334,7 @@
         <div id="library-grid"></div>
     </div>
 
-    <!-- LIGHTBOX (Standard) -->
+    <!-- LIGHTBOX -->
     <div id="lightbox">
         <div id="close-btn">&times;</div>
         <div class="lightbox-frame">
@@ -360,7 +350,6 @@
     <!-- FULLSCREEN CINEMA MODE -->
     <div id="cinema-mode">
         <img id="cinema-img" src="" alt="Slideshow">
-        
         <div id="cinema-controls">
             <button class="control-btn" onclick="setSpeed(3000, this)" id="btn-3s">3s</button>
             <button class="control-btn active" onclick="setSpeed(5000, this)" id="btn-5s">5s</button>
@@ -383,7 +372,6 @@
     </div>
 
     <script>
-        // --- DATA & ELEMENTS ---
         const giftBox = document.getElementById('gift-box');
         const splashScreen = document.getElementById('splash-screen');
         const mainContent = document.getElementById('main-content');
@@ -392,12 +380,10 @@
         
         let allImageSources = [];
         
-        // --- ON LOAD ---
         window.addEventListener('load', () => {
             collectAllImages();
             const urlParams = new URLSearchParams(window.location.search);
             const photoParam = urlParams.get('photo');
-
             if (photoParam) {
                 splashScreen.classList.add('hidden');
                 mainContent.style.opacity = '1';
@@ -420,11 +406,8 @@
             }, 800);
         }
         giftBox.addEventListener('click', openGift);
-        giftBox.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.keyCode === 13) openGift();
-        });
+        giftBox.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.keyCode === 13) openGift(); });
 
-        // --- SNOW LOGIC ---
         function startSnow() {
             setInterval(() => {
                 const snowflake = document.createElement('div');
@@ -437,6 +420,98 @@
                 document.body.appendChild(snowflake);
                 setTimeout(() => { snowflake.remove(); }, 7000);
             }, 200); 
+        }
+
+        // --- AUDIO SYSTEM (DOUBLE DECKER) ---
+        const audioUrl = 'music/audio.mp3';
+        const fadeDuration = 10; // seconds crossfade
+        let deckA = new Audio(audioUrl);
+        let deckB = new Audio(audioUrl);
+        let currentDeck = deckA;
+        let nextDeck = deckB;
+        let isCrossfading = false;
+        let audioMonitorId;
+
+        deckA.preload = 'auto';
+        deckB.preload = 'auto';
+
+        function startMusic() {
+            // Reset state
+            deckA.currentTime = 0; deckB.currentTime = 0;
+            deckA.volume = 0; deckB.volume = 0;
+            currentDeck = deckA; nextDeck = deckB;
+            isCrossfading = false;
+
+            // Start playing Deck A with fade in
+            currentDeck.play().then(() => {
+                fadeVolume(currentDeck, 0, 1, 2000); // 2s quick fade in start
+                monitorAudioLoop();
+            }).catch(e => console.log("Audio prevented:", e));
+        }
+
+        function stopMusic() {
+            cancelAnimationFrame(audioMonitorId);
+            // Quick fade out both
+            fadeVolume(deckA, deckA.volume, 0, 1500);
+            fadeVolume(deckB, deckB.volume, 0, 1500);
+            setTimeout(() => {
+                deckA.pause(); deckB.pause();
+            }, 1500);
+        }
+
+        function monitorAudioLoop() {
+            if (!cinemaMode.classList.contains('active')) return;
+
+            const remaining = currentDeck.duration - currentDeck.currentTime;
+            
+            // Check if we are in the crossfade window (last 10s)
+            if (remaining <= fadeDuration && !isCrossfading && remaining > 0 && !isNaN(remaining)) {
+                console.log("Crossfading now...");
+                isCrossfading = true;
+                
+                // Prep next deck
+                nextDeck.currentTime = 0;
+                nextDeck.volume = 0;
+                nextDeck.play();
+
+                // Crossfade Logic
+                const intervalStep = 100; // ms
+                const volumeStep = 1 / (fadeDuration * (1000/intervalStep));
+                
+                const fadeInterval = setInterval(() => {
+                    if (currentDeck.volume > volumeStep) currentDeck.volume = Math.max(0, currentDeck.volume - volumeStep);
+                    if (nextDeck.volume < 1 - volumeStep) nextDeck.volume = Math.min(1, nextDeck.volume + volumeStep);
+
+                    if (currentDeck.volume <= volumeStep * 2) {
+                        clearInterval(fadeInterval);
+                        // Swap decks
+                        currentDeck.pause();
+                        currentDeck.volume = 0;
+                        nextDeck.volume = 1;
+                        
+                        // Swap references
+                        let temp = currentDeck;
+                        currentDeck = nextDeck;
+                        nextDeck = temp;
+                        isCrossfading = false;
+                    }
+                }, intervalStep);
+            }
+            audioMonitorId = requestAnimationFrame(monitorAudioLoop);
+        }
+
+        function fadeVolume(audio, start, end, duration) {
+            const steps = 20;
+            const stepTime = duration / steps;
+            const volStep = (end - start) / steps;
+            let currentStep = 0;
+            const interval = setInterval(() => {
+                currentStep++;
+                let newVol = start + (volStep * currentStep);
+                newVol = Math.max(0, Math.min(1, newVol));
+                audio.volume = newVol;
+                if (currentStep >= steps) clearInterval(interval);
+            }, stepTime);
         }
 
         // --- IMAGE COLLECTION ---
@@ -457,17 +532,11 @@
         let cinemaSpeed = 5000;
         let idleTimeout;
 
-        // Reset the idle timer on interaction
         function resetIdleTimer() {
-            // Wake up
             cinemaMode.classList.remove('idle');
             clearTimeout(idleTimeout);
-            
-            // Go idle after 20s
             if (cinemaMode.classList.contains('active')) {
-                idleTimeout = setTimeout(() => {
-                    cinemaMode.classList.add('idle');
-                }, 20000); 
+                idleTimeout = setTimeout(() => { cinemaMode.classList.add('idle'); }, 20000); 
             }
         }
 
@@ -475,19 +544,18 @@
             if (allImageSources.length === 0) collectAllImages();
             cinemaMode.classList.add('active');
             
-            // Go Fullscreen
             if (document.documentElement.requestFullscreen) {
                 document.documentElement.requestFullscreen().catch(err => console.log(err));
             }
 
-            // Start Idle Listeners
             document.addEventListener('mousemove', resetIdleTimer);
             document.addEventListener('mousedown', resetIdleTimer);
             document.addEventListener('keydown', resetIdleTimer);
             document.addEventListener('touchstart', resetIdleTimer);
             
-            resetIdleTimer(); // Init timer
+            resetIdleTimer();
             runCinema();
+            startMusic(); // START AUDIO
         });
 
         function runCinema() {
@@ -519,8 +587,8 @@
             cinemaMode.classList.remove('active');
             clearInterval(cinemaInterval);
             clearTimeout(idleTimeout);
+            stopMusic(); // STOP AUDIO
             
-            // Clean listeners
             document.removeEventListener('mousemove', resetIdleTimer);
             document.removeEventListener('mousedown', resetIdleTimer);
             document.removeEventListener('keydown', resetIdleTimer);
@@ -529,7 +597,7 @@
             if (document.exitFullscreen) document.exitFullscreen();
         });
 
-        // --- LIGHTBOX (STANDARD) ---
+        // --- LIGHTBOX ---
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const closeBtn = document.getElementById('close-btn');
@@ -542,7 +610,6 @@
             lightboxImg.src = src; 
             printImgTarget.src = src; 
             lightbox.classList.add('active');
-            
             const url = new URL(window.location);
             url.searchParams.set('photo', src);
             window.history.pushState({}, '', url);
