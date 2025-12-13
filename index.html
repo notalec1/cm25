@@ -3,410 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Christmas 2025 | The Gallery</title>
-    <!-- Premium Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <title>Christmas 2025 Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Mountains+of+Christmas:wght@700&family=Quicksand:wght@400&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --deep-red: #2b0a0d;
-            --bright-red: #8a1c22;
-            --gold: #d4af37;
-            --gold-shine: #f9e58b;
-            --snow: #f0f0f0;
-        }
-
-        /* --- CINEMATIC BACKGROUND --- */
+        /* --- BACKGROUND & BASICS --- */
         body {
             margin: 0;
             padding: 0;
-            background: radial-gradient(circle at center, #5e1318 0%, #2b0a0d 100%);
-            font-family: 'Lato', sans-serif;
-            overflow: hidden;
+            background-color: #d45d79; 
+            /* The original subtle dot pattern you liked */
+            background-image: 
+                radial-gradient(white 15%, transparent 16%),
+                radial-gradient(white 15%, transparent 16%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden; 
             height: 100vh;
             width: 100vw;
-            color: var(--snow);
         }
 
-        /* Film Grain Texture Overlay */
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 0;
+        /* --- SNOWFLAKES --- */
+        .snowflake {
+            position: fixed; top: -10px; color: #fff; font-size: 1em;
+            font-family: Arial, sans-serif; text-shadow: 0 0 5px #000;
+            user-select: none; z-index: 1; pointer-events: none;
+            animation-name: fall; animation-timing-function: linear;
         }
 
-        /* Vignette Effect (Dark Corners) */
-        .vignette {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            box-shadow: inset 0 0 150px rgba(0,0,0,0.8);
-            pointer-events: none;
-            z-index: 2;
+        @keyframes fall {
+            0% { transform: translateY(-10vh) translateX(0); opacity: 1; }
+            100% { transform: translateY(110vh) translateX(20px); opacity: 0; }
         }
 
-        /* --- ANIMATED STRING LIGHTS --- */
-        .light-rope {
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            position: absolute;
-            z-index: 3;
-            margin: -15px 0 0 0;
-            padding: 0;
-            pointer-events: none;
-            width: 100%;
-        }
-
-        .light-bulb {
-            position: relative;
-            display: inline-block;
-            margin: 20px 15px; /* Spacing */
-            padding: 0;
-            width: 12px;
-            height: 24px;
-            border-radius: 50%;
-            background: #fff;
-            animation-name: flash;
-            animation-duration: 2s;
-            animation-iteration-count: infinite;
-            animation-fill-mode: both;
-        }
-
-        .light-bulb::before {
-            content: "";
-            position: absolute;
-            background: #222;
-            width: 10px;
-            height: 10px;
-            border-radius: 3px;
-            top: -5px;
-            left: 1px;
-        }
-
-        /* Cord connecting lights */
-        .light-rope::after {
-            content: "";
-            position: absolute;
-            top: 10px;
-            left: 0;
-            width: 100%;
-            height: 20px;
-            border-top: 2px solid #222;
-            border-radius: 50%;
-            z-index: -1;
-        }
-
-        .bulb-red { background: #ff4757; box-shadow: 0px 5px 24px 3px #ff4757; animation-delay: 0s; }
-        .bulb-green { background: #2ecc71; box-shadow: 0px 5px 24px 3px #2ecc71; animation-delay: 1s; }
-        .bulb-gold { background: #f1c40f; box-shadow: 0px 5px 24px 3px #f1c40f; animation-delay: 0.5s; }
-        .bulb-blue { background: #3498db; box-shadow: 0px 5px 24px 3px #3498db; animation-delay: 1.5s; }
-
-        @keyframes flash {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.9); }
-        }
-
-        /* --- SPLASH SCREEN (GIFT) --- */
+        /* --- SPLASH SCREEN --- */
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, #8a1c22 0%, #2b0a0d 100%);
-            z-index: 9999;
+            background-color: #c92a42; z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 1s cubic-bezier(0.65, 0, 0.35, 1), visibility 1s;
+            transition: opacity 0.8s ease-out, visibility 0.8s;
         }
-        
-        /* Glowing Spotlight behind gift */
-        #splash-screen::before {
-            content: '';
-            position: absolute; width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, transparent 70%);
-            animation: pulse-glow 3s infinite ease-in-out;
-        }
-
-        .gift-container { position: relative; cursor: pointer; transition: transform 0.2s; z-index: 10; }
-        .gift-container:hover { animation: shake 0.5s infinite; filter: brightness(1.2); }
-        
-        .click-text {
-            color: var(--gold);
-            margin-top: 40px;
-            font-size: 2rem;
-            font-family: 'Great Vibes', cursive;
-            letter-spacing: 2px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            animation: pulse-text 2s infinite;
-        }
-
-        /* 3D-ish CSS Gift Box */
-        .gift-lid {
-            width: 160px; height: 35px;
-            background: linear-gradient(to right, #d32f2f, #b71c1c);
-            border-radius: 4px; position: relative; z-index: 2;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4); left: -10px;
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-bottom: 2px solid rgba(0,0,0,0.2);
-        }
-        .gift-body {
-            width: 140px; height: 110px;
-            background: linear-gradient(to right, #d32f2f, #b71c1c);
-            border-radius: 0 0 4px 4px; position: relative;
-            box-shadow: 0 20px 30px rgba(0,0,0,0.5);
-        }
-        .ribbon-vertical { 
-            width: 25px; height: 100%; 
-            background: linear-gradient(to right, #ffd700, #f9e58b, #d4af37);
-            margin: 0 auto; 
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
-        }
-        .ribbon-horizontal { 
-            width: 100%; height: 25px; 
-            background: linear-gradient(to bottom, #ffd700, #f9e58b, #d4af37);
-            position: absolute; top: 45%; transform: translateY(-50%);
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
-        }
-
-        .gift-opened .gift-lid { transform: translateY(-120px) rotate(-15deg); opacity: 0; }
+        .gift-container { position: relative; cursor: pointer; transition: transform 0.1s; }
+        .gift-container:hover { animation: shake 0.5s infinite; }
+        .click-text { color: white; margin-top: 30px; font-size: 1.5rem; font-family: 'Mountains of Christmas', cursive; animation: pulse 1.5s infinite; }
+        .gift-lid { width: 160px; height: 40px; background-color: #ff4757; border-radius: 4px; position: relative; z-index: 2; box-shadow: 0 4px 10px rgba(0,0,0,0.2); left: -10px; transition: transform 0.6s ease-in; }
+        .gift-body { width: 140px; height: 120px; background-color: #ff4757; border-radius: 0 0 4px 4px; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .ribbon-vertical { width: 30px; height: 100%; background-color: #ffd700; margin: 0 auto; }
+        .ribbon-horizontal { width: 100%; height: 30px; background-color: #ffd700; position: absolute; top: 50%; transform: translateY(-50%); }
+        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(3deg); } 50% { transform: rotate(0deg); } 75% { transform: rotate(-3deg); } 100% { transform: rotate(0deg); } }
+        @keyframes pulse { 0% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } 100% { opacity: 0.7; transform: scale(1); } }
+        .gift-opened .gift-lid { transform: translateY(-100px) rotate(-20deg); }
         .fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
 
-        @keyframes pulse-glow { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.2); } }
-        @keyframes pulse-text { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; text-shadow: 0 0 10px var(--gold); } }
-
-        /* --- MAIN LAYOUT --- */
+        /* --- MAIN CONTENT --- */
         #main-content {
-            opacity: 0; transition: opacity 1.5s ease-in;
+            opacity: 0; transition: opacity 1s ease-in;
             display: flex; flex-direction: column; justify-content: center;
             min-height: 100vh; width: 100%;
-            position: relative; z-index: 5;
         }
-
         .header-overlay {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 20;
-            text-align: center;
-            pointer-events: none; /* Let clicks pass through to photos */
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10;
+            background: rgba(255, 255, 255, 0.9); padding: 20px 40px; border-radius: 50px;
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); backdrop-filter: blur(5px);
+            border: 2px solid #c92a42;
         }
-
-        h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 5rem;
-            color: transparent;
-            background: linear-gradient(to bottom, #fff 20%, #e0e0e0 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            margin: 0;
-            text-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            letter-spacing: 5px;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
-        }
+        h1 { font-family: 'Mountains of Christmas', cursive; font-size: 3rem; color: #c92a42; margin: 0; }
         
-        .year-badge {
-            font-family: 'Great Vibes', cursive;
-            color: var(--gold);
-            font-size: 3rem;
-            margin-top: -10px;
-            display: block;
-            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
-        }
-
-        /* --- THE GALLERY (INFINITE SCROLL) --- */
+        /* --- GALLERY LAYOUT (Fixed Clipping Issue) --- */
         .scroll-container { 
             width: 100%; 
-            display: flex; flex-direction: column; 
-            gap: 15px; 
-            padding: 40px 0;
-            perspective: 1000px; /* For 3D feel */
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; /* Spacing between rows */
+            padding: 20px 0; 
         }
         
         .scroll-row { 
-            display: flex; overflow: hidden; position: relative; width: 100%; 
-            padding-top: 30px; padding-bottom: 30px;
-            margin-top: -20px; margin-bottom: -20px;
-            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); /* Fade edges */
+            display: flex; 
+            overflow: hidden; 
+            position: relative; 
+            width: 100%; 
+            /* PADDING FIX: This gives room for the image to grow without being cut off */
+            padding-top: 20px;
+            padding-bottom: 20px;
+            /* Pull rows closer so the padding doesn't make them look too far apart */
+            margin-top: -10px;
+            margin-bottom: -10px;
         }
         
         .scroll-row:hover .scroll-track { animation-play-state: paused; }
-        .scroll-track { display: flex; gap: 30px; width: max-content; padding-left: 30px; }
+        .scroll-track { display: flex; gap: 20px; width: max-content; padding-left: 20px; }
         
         .img-circle {
-            width: 200px; height: 200px; 
+            width: 180px; height: 180px; 
             border-radius: 50%; 
             object-fit: cover;
-            /* Luxurious Gold Border */
-            border: 3px solid rgba(255, 215, 0, 0.3);
-            box-shadow: 
-                0 0 0 2px var(--gold), /* Outer gold ring */
-                0 10px 20px rgba(0,0,0,0.5); /* Deep shadow */
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 4px solid white; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.3s; 
             cursor: pointer;
-            filter: sepia(20%); /* Slight vintage warmth */
+            position: relative; 
+            z-index: 5;
         }
         
         .img-circle:hover { 
-            transform: scale(1.15) translateY(-5px); 
-            z-index: 10; 
-            border-color: #fff;
-            box-shadow: 0 0 0 4px var(--gold-shine), 0 20px 40px rgba(0,0,0,0.6);
-            filter: sepia(0%); /* Full color on hover */
+            transform: scale(1.15); /* Zoom Effect */
+            z-index: 6; 
+            border-color: #ffd700; 
         }
         
-        .move-left { animation: scrollLeft 100s linear infinite; }
-        .move-right { animation: scrollRight 120s linear infinite; }
-        
+        /* Animation speeds adjusted for 50 images */
+        .move-left { animation: scrollLeft 120s linear infinite; }
+        .move-right { animation: scrollRight 140s linear infinite; }
+
         @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes scrollRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
-        /* --- SNOW (Advanced) --- */
-        .snowflake {
-            position: fixed; top: -20px; color: #fff; 
-            user-select: none; pointer-events: none; z-index: 1;
-            animation-name: fall; animation-timing-function: linear;
-            filter: blur(1px);
-        }
-        @keyframes fall {
-            to { transform: translateY(110vh) translateX(50px) rotate(360deg); }
-        }
-
-        /* --- LIGHTBOX (Glassmorphism) --- */
+        /* --- LIGHTBOX --- */
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(43, 10, 13, 0.6); /* Semi-transparent tint */
-            backdrop-filter: blur(15px); /* Strong blur */
-            z-index: 10000;
+            background: rgba(0, 0, 0, 0.85); z-index: 10000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden; transition: all 0.4s ease;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease; backdrop-filter: blur(5px);
         }
         #lightbox.active { opacity: 1; visibility: visible; }
-        
         .lightbox-frame {
-            position: relative; padding: 20px;
-            /* Gold Frame Gradient */
-            background: linear-gradient(135deg, #b8860b, #f9e58b, #daa520, #b8860b);
-            border-radius: 20px; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.7);
-            max-width: 85%; max-height: 75vh; display: flex;
-            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; padding: 15px;
+            background: repeating-linear-gradient(45deg, #ffffff, #ffffff 10px, #c92a42 10px, #c92a42 20px);
+            border-radius: 15px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            max-width: 80%; max-height: 70vh; display: flex;
         }
+        .lightbox-frame::after { content: "🌿"; position: absolute; top: -20px; right: -20px; font-size: 3rem; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3)); }
+        #lightbox-img { display: block; max-width: 100%; max-height: 65vh; border-radius: 5px; border: 4px solid white; }
         
-        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        /* Decoration on Frame */
-        .lightbox-frame::before {
-            content: "❄"; position: absolute; top: -25px; left: -25px;
-            font-size: 4rem; color: #fff; text-shadow: 0 0 10px var(--gold);
-        }
-        .lightbox-frame::after {
-            content: "❄"; position: absolute; bottom: -25px; right: -25px;
-            font-size: 4rem; color: #fff; text-shadow: 0 0 10px var(--gold);
-        }
-
-        #lightbox-img { 
-            display: block; max-width: 100%; max-height: 70vh; 
-            border-radius: 4px; border: 2px solid white; 
-        }
-        
-        /* Action Buttons */
-        .action-buttons { display: flex; gap: 20px; margin-top: 30px; }
+        .action-buttons { display: flex; gap: 15px; margin-top: 20px; }
         .btn {
-            background: linear-gradient(to bottom, #fff, #f0f0f0);
-            border: 2px solid var(--gold);
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            color: var(--deep-red);
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            display: flex; align-items: center; gap: 10px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background-color: white; border: none; padding: 10px 20px;
+            border-radius: 30px; font-family: 'Quicksand', sans-serif; font-weight: bold;
+            cursor: pointer; transition: transform 0.2s, background-color 0.2s;
+            display: flex; align-items: center; gap: 8px; font-size: 1rem;
+            color: #c92a42; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .btn:hover { 
-            transform: translateY(-3px); 
-            background: var(--gold); 
-            color: #fff;
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.4);
-            border-color: #fff;
-        }
-        
-        #close-btn { 
-            position: absolute; top: 30px; right: 40px; 
-            font-size: 3rem; color: rgba(255,255,255,0.7); 
-            cursor: pointer; transition: 0.3s; 
-            font-family: sans-serif; font-weight: 100;
-        }
-        #close-btn:hover { color: var(--gold); transform: rotate(90deg); }
+        .btn:hover { transform: scale(1.1); background-color: #ffd700; color: #333; }
+        #close-btn { position: absolute; top: 20px; right: 30px; font-size: 3rem; color: white; cursor: pointer; transition: transform 0.2s; }
+        #close-btn:hover { transform: scale(1.2) rotate(90deg); color: #ffd700; }
 
-        /* --- PRINT STYLES (Bulletproof) --- */
-        #print-area { display: none; }
+        /* --- PRINT AREA --- */
+        #print-area { display: none; } 
+        
+        /* The Robust Printing Style (Solid colors, no transparency issues) */
         @media print {
             @page { size: landscape; margin: 0; }
-            #splash-screen, #main-content, #lightbox, .snowflake, .light-rope, .vignette, body::after { display: none !important; }
-            body { background: white !important; margin: 0; padding: 0; width: 297mm; height: 210mm; overflow: hidden; display: block; position: relative; }
+            #splash-screen, #main-content, #lightbox, .snowflake { display: none !important; height: 0; width: 0; overflow: hidden; }
+            body { background: white !important; margin: 0 !important; padding: 0 !important; width: 297mm; height: 210mm; overflow: hidden !important; display: block; }
             
             #print-area { 
                 display: flex !important; flex-direction: row; 
-                position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-                box-sizing: border-box; padding: 15mm;
+                position: absolute; top: 0; left: 0; 
+                width: 297mm; height: 210mm; 
+                box-sizing: border-box; padding: 15mm; 
             }
-            .print-card-content {
-                width: 100%; height: 100%;
-                display: flex; flex-direction: row; align-items: center;
-                border: 6px double #8a1c22; border-radius: 10px;
-                padding: 10px; box-sizing: border-box;
+            
+            .print-card-content { 
+                display: flex; flex-direction: row; 
+                width: 100%; height: 100%; 
+                border: 4px double #c92a42; /* Festive Border */
+                border-radius: 20px; padding: 20px; 
+                box-sizing: border-box; 
             }
-            .print-image-container { flex: 1.2; height: 100%; display: flex; align-items: center; justify-content: center; }
-            #print-img-target { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 5px; box-shadow: 0 0 0 1px #ccc; }
-            .print-text-container { flex: 0.8; text-align: center; font-family: 'Great Vibes', cursive; }
-            .print-title { font-size: 5rem; line-height: 1; color: #b22222 !important; margin: 0 0 20px 0; -webkit-print-color-adjust: exact; }
-            .print-year { font-size: 3.5rem; color: #2e8b57 !important; -webkit-print-color-adjust: exact; }
+            
+            .print-image-container { width: 55%; height: 100%; display: flex; align-items: center; justify-content: center; }
+            #print-img-target { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 10px; border: 2px solid #eee; box-shadow: none; }
+            
+            .print-text-container { width: 45%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-family: 'Dancing Script', cursive; }
+            
+            /* Solid colors for guaranteed printing */
+            .print-title { 
+                font-size: 5rem; line-height: 1; margin-bottom: 20px; 
+                color: #b22222 !important; 
+                text-shadow: 2px 2px 0px #eee; 
+                background: none !important;
+                -webkit-text-fill-color: #b22222 !important;
+            }
+            .print-year { 
+                font-size: 3.5rem; 
+                color: #2e8b57 !important; 
+                font-weight: bold; 
+                -webkit-print-color-adjust: exact !important; 
+            }
         }
 
         @media (max-width: 768px) {
-            .img-circle { width: 140px; height: 140px; }
-            h1 { font-size: 3rem; }
-            .year-badge { font-size: 2rem; }
-            .scroll-row { padding-top: 20px; padding-bottom: 20px; }
-            .lightbox-frame { max-width: 90%; padding: 10px; }
-            .btn { padding: 10px 15px; font-size: 0.8rem; }
-            .light-bulb { margin: 10px 8px; width: 8px; height: 16px; }
+            .img-circle { width: 120px; height: 120px; }
+            h1 { font-size: 1.5rem; }
+            .lightbox-frame { max-width: 95%; }
+            .action-buttons { flex-wrap: wrap; justify-content: center; }
         }
     </style>
 </head>
 <body>
-
-    <!-- VIGNETTE OVERLAY -->
-    <div class="vignette"></div>
-
-    <!-- STRING LIGHTS -->
-    <ul class="light-rope">
-        <li class="light-bulb bulb-red"></li>
-        <li class="light-bulb bulb-green"></li>
-        <li class="light-bulb bulb-gold"></li>
-        <li class="light-bulb bulb-blue"></li>
-        <li class="light-bulb bulb-red"></li>
-        <li class="light-bulb bulb-gold"></li>
-        <li class="light-bulb bulb-green"></li>
-        <li class="light-bulb bulb-blue"></li>
-        <li class="light-bulb bulb-red"></li>
-        <li class="light-bulb bulb-gold"></li>
-        <li class="light-bulb bulb-green"></li>
-        <li class="light-bulb bulb-blue"></li>
-        <li class="light-bulb bulb-red"></li>
-        <li class="light-bulb bulb-gold"></li>
-        <li class="light-bulb bulb-green"></li>
-        <li class="light-bulb bulb-blue"></li>
-        <li class="light-bulb bulb-red"></li>
-        <li class="light-bulb bulb-gold"></li>
-        <li class="light-bulb bulb-green"></li>
-        <li class="light-bulb bulb-blue"></li>
-        <li class="light-bulb bulb-red"></li>
-        <li class="light-bulb bulb-gold"></li>
-        <li class="light-bulb bulb-green"></li>
-        <li class="light-bulb bulb-blue"></li>
-    </ul>
 
     <!-- SPLASH SCREEN -->
     <div id="splash-screen">
@@ -414,19 +210,15 @@
             <div class="gift-lid"><div class="ribbon-vertical"></div></div>
             <div class="gift-body"><div class="ribbon-vertical"></div><div class="ribbon-horizontal"></div></div>
         </div>
-        <p class="click-text">Click to Unwrap</p>
+        <p class="click-text">Tap to open!</p>
     </div>
 
     <!-- MAIN GALLERY -->
     <div id="main-content">
-        <div class="header-overlay">
-            <h1>Christmas</h1>
-            <span class="year-badge">2025</span>
-        </div>
-        
+        <div class="header-overlay"><h1>Christmas 2025</h1></div>
         <div class="scroll-container">
             
-            <!-- ROW 1 -->
+            <!-- ROW 1 (Photos 1-17) -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
                     <img src="https://picsum.photos/400?random=1" class="img-circle">
@@ -445,6 +237,7 @@
                     <img src="https://picsum.photos/400?random=14" class="img-circle">
                     <img src="https://picsum.photos/400?random=15" class="img-circle">
                     <img src="https://picsum.photos/400?random=16" class="img-circle">
+                    <img src="https://picsum.photos/400?random=17" class="img-circle">
                     <!-- Dupes -->
                     <img src="https://picsum.photos/400?random=1" class="img-circle">
                     <img src="https://picsum.photos/400?random=2" class="img-circle">
@@ -462,13 +255,13 @@
                     <img src="https://picsum.photos/400?random=14" class="img-circle">
                     <img src="https://picsum.photos/400?random=15" class="img-circle">
                     <img src="https://picsum.photos/400?random=16" class="img-circle">
+                    <img src="https://picsum.photos/400?random=17" class="img-circle">
                 </div>
             </div>
 
-            <!-- ROW 2 -->
+            <!-- ROW 2 (Photos 18-34) -->
             <div class="scroll-row">
                 <div class="scroll-track move-right">
-                    <img src="https://picsum.photos/400?random=17" class="img-circle">
                     <img src="https://picsum.photos/400?random=18" class="img-circle">
                     <img src="https://picsum.photos/400?random=19" class="img-circle">
                     <img src="https://picsum.photos/400?random=20" class="img-circle">
@@ -484,8 +277,9 @@
                     <img src="https://picsum.photos/400?random=30" class="img-circle">
                     <img src="https://picsum.photos/400?random=31" class="img-circle">
                     <img src="https://picsum.photos/400?random=32" class="img-circle">
+                    <img src="https://picsum.photos/400?random=33" class="img-circle">
+                    <img src="https://picsum.photos/400?random=34" class="img-circle">
                     <!-- Dupes -->
-                    <img src="https://picsum.photos/400?random=17" class="img-circle">
                     <img src="https://picsum.photos/400?random=18" class="img-circle">
                     <img src="https://picsum.photos/400?random=19" class="img-circle">
                     <img src="https://picsum.photos/400?random=20" class="img-circle">
@@ -501,14 +295,14 @@
                     <img src="https://picsum.photos/400?random=30" class="img-circle">
                     <img src="https://picsum.photos/400?random=31" class="img-circle">
                     <img src="https://picsum.photos/400?random=32" class="img-circle">
+                    <img src="https://picsum.photos/400?random=33" class="img-circle">
+                    <img src="https://picsum.photos/400?random=34" class="img-circle">
                 </div>
             </div>
 
-            <!-- ROW 3 -->
+            <!-- ROW 3 (Photos 35-50) -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
-                    <img src="https://picsum.photos/400?random=33" class="img-circle">
-                    <img src="https://picsum.photos/400?random=34" class="img-circle">
                     <img src="https://picsum.photos/400?random=35" class="img-circle">
                     <img src="https://picsum.photos/400?random=36" class="img-circle">
                     <img src="https://picsum.photos/400?random=37" class="img-circle">
@@ -523,9 +317,9 @@
                     <img src="https://picsum.photos/400?random=46" class="img-circle">
                     <img src="https://picsum.photos/400?random=47" class="img-circle">
                     <img src="https://picsum.photos/400?random=48" class="img-circle">
+                    <img src="https://picsum.photos/400?random=49" class="img-circle">
+                    <img src="https://picsum.photos/400?random=50" class="img-circle">
                     <!-- Dupes -->
-                    <img src="https://picsum.photos/400?random=33" class="img-circle">
-                    <img src="https://picsum.photos/400?random=34" class="img-circle">
                     <img src="https://picsum.photos/400?random=35" class="img-circle">
                     <img src="https://picsum.photos/400?random=36" class="img-circle">
                     <img src="https://picsum.photos/400?random=37" class="img-circle">
@@ -540,6 +334,8 @@
                     <img src="https://picsum.photos/400?random=46" class="img-circle">
                     <img src="https://picsum.photos/400?random=47" class="img-circle">
                     <img src="https://picsum.photos/400?random=48" class="img-circle">
+                    <img src="https://picsum.photos/400?random=49" class="img-circle">
+                    <img src="https://picsum.photos/400?random=50" class="img-circle">
                 </div>
             </div>
 
@@ -553,9 +349,9 @@
             <img id="lightbox-img" src="" alt="Enlarged Christmas Photo">
         </div>
         <div class="action-buttons">
-            <button class="btn" id="download-btn">⬇️ Save</button>
+            <button class="btn" id="download-btn">⬇️ Download</button>
             <button class="btn" id="share-btn">🔗 Share</button>
-            <button class="btn" id="print-btn">🖨️ Print</button>
+            <button class="btn" id="print-btn">🖨️ Print Card</button>
         </div>
     </div>
 
@@ -573,7 +369,6 @@
     </div>
 
     <script>
-        /* --- LOGIC PRESERVED & OPTIMIZED --- */
         const giftBox = document.getElementById('gift-box');
         const splashScreen = document.getElementById('splash-screen');
         const mainContent = document.getElementById('main-content');
@@ -582,37 +377,25 @@
         giftBox.addEventListener('click', () => {
             giftBox.classList.add('gift-opened');
             setTimeout(() => {
-                splashScreen.style.opacity = '0';
-                setTimeout(() => splashScreen.style.visibility = 'hidden', 1000);
-                
+                splashScreen.classList.add('fade-out');
                 mainContent.style.opacity = '1';
+                body.style.overflow = 'auto'; 
                 startSnow(); 
-            }, 800);
+            }, 500);
         });
 
-        // Advanced Snow Engine (Variable depth/speed)
         function startSnow() {
             setInterval(() => {
                 const snowflake = document.createElement('div');
                 snowflake.classList.add('snowflake');
-                snowflake.innerText = Math.random() > 0.5 ? '❄' : '❅';
-                
-                // Randomize positions and physics
-                const size = Math.random() * 1.5 + 0.5; // 0.5rem to 2rem
-                const duration = Math.random() * 5 + 5; // 5s to 10s
-                const startLeft = Math.random() * 100;
-                
-                snowflake.style.left = startLeft + 'vw';
-                snowflake.style.fontSize = size + 'rem';
-                snowflake.style.opacity = Math.random() * 0.7 + 0.3;
-                snowflake.style.animationDuration = duration + 's';
-                
-                // Blur effect for depth
-                if(size < 0.8) snowflake.style.filter = 'blur(2px)';
-
+                snowflake.innerText = '❄'; 
+                snowflake.style.left = Math.random() * 100 + 'vw'; 
+                snowflake.style.animationDuration = Math.random() * 3 + 2 + 's'; 
+                snowflake.style.opacity = Math.random(); 
+                snowflake.style.fontSize = Math.random() * 10 + 10 + 'px'; 
                 document.body.appendChild(snowflake);
-                setTimeout(() => { snowflake.remove(); }, duration * 1000);
-            }, 150);
+                setTimeout(() => { snowflake.remove(); }, 5000);
+            }, 100); 
         }
 
         const lightbox = document.getElementById('lightbox');
@@ -651,14 +434,13 @@
             if (navigator.share) {
                 try {
                     await navigator.share({
-                        title: 'Christmas 2025',
-                        text: 'A magical memory from Christmas 2025.',
+                        title: 'Christmas 2025 Photo',
+                        text: 'Look at this memory!',
                         url: window.location.href
                     });
                 } catch (err) { console.log('Error sharing:', err); }
             } else {
-                alert('Link copied to clipboard!');
-                navigator.clipboard.writeText(window.location.href);
+                alert('Copy this link to share: ' + window.location.href);
             }
         });
 
