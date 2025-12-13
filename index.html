@@ -92,8 +92,6 @@
         
         h1 { font-family: 'Mountains of Christmas', cursive; font-size: 3rem; color: white; margin: 0; text-shadow: 0 0 15px rgba(255,255,255,0.4); white-space: nowrap; }
 
-        .header-buttons { display: flex; gap: 10px; }
-
         .view-btn {
             background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: var(--gold);
             font-family: 'Quicksand', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
@@ -372,6 +370,7 @@
     </div>
 
     <script>
+        // --- DATA & ELEMENTS ---
         const giftBox = document.getElementById('gift-box');
         const splashScreen = document.getElementById('splash-screen');
         const mainContent = document.getElementById('main-content');
@@ -380,10 +379,12 @@
         
         let allImageSources = [];
         
+        // --- ON LOAD ---
         window.addEventListener('load', () => {
             collectAllImages();
             const urlParams = new URLSearchParams(window.location.search);
             const photoParam = urlParams.get('photo');
+
             if (photoParam) {
                 splashScreen.classList.add('hidden');
                 mainContent.style.opacity = '1';
@@ -406,8 +407,11 @@
             }, 800);
         }
         giftBox.addEventListener('click', openGift);
-        giftBox.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.keyCode === 13) openGift(); });
+        giftBox.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.keyCode === 13) openGift();
+        });
 
+        // --- SNOW LOGIC ---
         function startSnow() {
             setInterval(() => {
                 const snowflake = document.createElement('div');
@@ -431,20 +435,28 @@
         let nextDeck = deckB;
         let isCrossfading = false;
         let audioMonitorId;
+        let stopTimeout; // To clear fades
 
         deckA.preload = 'auto';
         deckB.preload = 'auto';
 
         function startMusic() {
-            // Reset state
+            // 1. CLEAR EVERYTHING to prevent overlaps
+            clearTimeout(stopTimeout);
+            cancelAnimationFrame(audioMonitorId);
+            
+            // 2. HARD RESET
+            deckA.pause(); deckB.pause();
             deckA.currentTime = 0; deckB.currentTime = 0;
             deckA.volume = 0; deckB.volume = 0;
+            
+            // 3. SET POINTERS
             currentDeck = deckA; nextDeck = deckB;
             isCrossfading = false;
 
-            // Start playing Deck A with fade in
+            // 4. PLAY with simple fade in
             currentDeck.play().then(() => {
-                fadeVolume(currentDeck, 0, 1, 2000); // 2s quick fade in start
+                fadeVolume(currentDeck, 0, 1, 2000); 
                 monitorAudioLoop();
             }).catch(e => console.log("Audio prevented:", e));
         }
@@ -454,8 +466,10 @@
             // Quick fade out both
             fadeVolume(deckA, deckA.volume, 0, 1500);
             fadeVolume(deckB, deckB.volume, 0, 1500);
-            setTimeout(() => {
+            
+            stopTimeout = setTimeout(() => {
                 deckA.pause(); deckB.pause();
+                deckA.currentTime = 0; deckB.currentTime = 0;
             }, 1500);
         }
 
@@ -464,18 +478,15 @@
 
             const remaining = currentDeck.duration - currentDeck.currentTime;
             
-            // Check if we are in the crossfade window (last 10s)
+            // Check crossfade window
             if (remaining <= fadeDuration && !isCrossfading && remaining > 0 && !isNaN(remaining)) {
-                console.log("Crossfading now...");
                 isCrossfading = true;
                 
-                // Prep next deck
                 nextDeck.currentTime = 0;
                 nextDeck.volume = 0;
                 nextDeck.play();
 
-                // Crossfade Logic
-                const intervalStep = 100; // ms
+                const intervalStep = 100;
                 const volumeStep = 1 / (fadeDuration * (1000/intervalStep));
                 
                 const fadeInterval = setInterval(() => {
@@ -484,12 +495,11 @@
 
                     if (currentDeck.volume <= volumeStep * 2) {
                         clearInterval(fadeInterval);
-                        // Swap decks
                         currentDeck.pause();
                         currentDeck.volume = 0;
                         nextDeck.volume = 1;
                         
-                        // Swap references
+                        // Swap
                         let temp = currentDeck;
                         currentDeck = nextDeck;
                         nextDeck = temp;
