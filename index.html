@@ -29,6 +29,17 @@
             min-height: 100vh; overflow-y: scroll; overflow-x: hidden;
         }
 
+        /* --- PERFORMANCE: Fade In Image Animation --- */
+        /* Images start transparent and fade in when loaded */
+        img {
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0; 
+        }
+        /* JS will add this class when the image finishes loading */
+        img.loaded {
+            opacity: 1;
+        }
+
         /* --- SNOWFLAKES --- */
         .snowflake {
             position: fixed; top: -10px; color: #fff; font-size: 1em;
@@ -51,11 +62,7 @@
             transition: opacity 1s ease-out, visibility 1s;
         }
         
-        .gift-container { 
-            position: relative; cursor: pointer; 
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            outline: none;
-        }
+        .gift-container { position: relative; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); outline: none; }
         .gift-container:hover, .gift-container:focus { transform: scale(1.05); } 
         .gift-container:focus .gift-body { box-shadow: 0 0 0 5px var(--gold), 0 10px 25px var(--shadow); }
         
@@ -92,6 +99,8 @@
         
         h1 { font-family: 'Mountains of Christmas', cursive; font-size: 3rem; color: white; margin: 0; text-shadow: 0 0 15px rgba(255,255,255,0.4); white-space: nowrap; }
 
+        .header-buttons { display: flex; gap: 10px; }
+
         .view-btn {
             background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: var(--gold);
             font-family: 'Quicksand', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
@@ -109,8 +118,10 @@
         .img-circle {
             width: 180px; height: 180px; border-radius: 50%; object-fit: cover;
             border: 3px solid rgba(255,255,255,0.9); box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; 
             cursor: pointer; position: relative; z-index: 5;
+            /* Placeholder background color while loading */
+            background-color: rgba(255,255,255,0.1);
         }
         .img-circle:hover { transform: scale(1.12); z-index: 6; border-color: var(--gold); box-shadow: 0 0 25px rgba(255, 215, 0, 0.4); }
         
@@ -129,12 +140,14 @@
         #library-grid.active { display: grid; }
         .grid-img {
             width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 15px; 
-            border: 2px solid rgba(255,255,255,0.5); cursor: pointer; transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.5); cursor: pointer; 
+            transition: transform 0.3s, opacity 0.5s ease;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            background-color: rgba(255,255,255,0.1);
         }
         .grid-img:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 
-        /* --- LIGHTBOX (Standard) --- */
+        /* --- LIGHTBOX --- */
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(10, 15, 30, 0.95); z-index: 10000;
@@ -248,10 +261,13 @@
             </div>
         </div>
 
+        <!-- MARQUEE VIEW -->
+        <!-- Images here need to be WEBP and have loading="eager" for the very first few visible ones -->
+        <!-- I will use placeholders from picsum, but you must replace these with your 1.webp, 2.webp etc. -->
         <div class="scroll-container">
-            <!-- ROW 1 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
+                    <!-- Note: No loading="lazy" on the first row to prevent blank spaces on load -->
                     <img src="https://picsum.photos/400?random=1" class="img-circle">
                     <img src="https://picsum.photos/400?random=2" class="img-circle">
                     <img src="https://picsum.photos/400?random=3" class="img-circle">
@@ -275,56 +291,57 @@
                     <img src="https://picsum.photos/400?random=10" class="img-circle">
                 </div>
             </div>
-            <!-- ROW 2 -->
+            
             <div class="scroll-row">
                 <div class="scroll-track move-right">
-                    <img src="https://picsum.photos/400?random=11" class="img-circle">
-                    <img src="https://picsum.photos/400?random=12" class="img-circle">
-                    <img src="https://picsum.photos/400?random=13" class="img-circle">
-                    <img src="https://picsum.photos/400?random=14" class="img-circle">
-                    <img src="https://picsum.photos/400?random=15" class="img-circle">
-                    <img src="https://picsum.photos/400?random=16" class="img-circle">
-                    <img src="https://picsum.photos/400?random=17" class="img-circle">
-                    <img src="https://picsum.photos/400?random=18" class="img-circle">
-                    <img src="https://picsum.photos/400?random=19" class="img-circle">
-                    <img src="https://picsum.photos/400?random=20" class="img-circle">
+                    <!-- Lazy load these since they are further down -->
+                    <img src="https://picsum.photos/400?random=11" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=12" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=13" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=14" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=15" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=16" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=17" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=18" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=19" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=20" class="img-circle" loading="lazy">
                     <!-- Dupes -->
-                    <img src="https://picsum.photos/400?random=11" class="img-circle">
-                    <img src="https://picsum.photos/400?random=12" class="img-circle">
-                    <img src="https://picsum.photos/400?random=13" class="img-circle">
-                    <img src="https://picsum.photos/400?random=14" class="img-circle">
-                    <img src="https://picsum.photos/400?random=15" class="img-circle">
-                    <img src="https://picsum.photos/400?random=16" class="img-circle">
-                    <img src="https://picsum.photos/400?random=17" class="img-circle">
-                    <img src="https://picsum.photos/400?random=18" class="img-circle">
-                    <img src="https://picsum.photos/400?random=19" class="img-circle">
-                    <img src="https://picsum.photos/400?random=20" class="img-circle">
+                    <img src="https://picsum.photos/400?random=11" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=12" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=13" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=14" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=15" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=16" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=17" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=18" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=19" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=20" class="img-circle" loading="lazy">
                 </div>
             </div>
-            <!-- ROW 3 -->
+
             <div class="scroll-row">
                 <div class="scroll-track move-left">
-                    <img src="https://picsum.photos/400?random=21" class="img-circle">
-                    <img src="https://picsum.photos/400?random=22" class="img-circle">
-                    <img src="https://picsum.photos/400?random=23" class="img-circle">
-                    <img src="https://picsum.photos/400?random=24" class="img-circle">
-                    <img src="https://picsum.photos/400?random=25" class="img-circle">
-                    <img src="https://picsum.photos/400?random=26" class="img-circle">
-                    <img src="https://picsum.photos/400?random=27" class="img-circle">
-                    <img src="https://picsum.photos/400?random=28" class="img-circle">
-                    <img src="https://picsum.photos/400?random=29" class="img-circle">
-                    <img src="https://picsum.photos/400?random=30" class="img-circle">
+                    <img src="https://picsum.photos/400?random=21" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=22" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=23" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=24" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=25" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=26" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=27" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=28" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=29" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=30" class="img-circle" loading="lazy">
                     <!-- Dupes -->
-                    <img src="https://picsum.photos/400?random=21" class="img-circle">
-                    <img src="https://picsum.photos/400?random=22" class="img-circle">
-                    <img src="https://picsum.photos/400?random=23" class="img-circle">
-                    <img src="https://picsum.photos/400?random=24" class="img-circle">
-                    <img src="https://picsum.photos/400?random=25" class="img-circle">
-                    <img src="https://picsum.photos/400?random=26" class="img-circle">
-                    <img src="https://picsum.photos/400?random=27" class="img-circle">
-                    <img src="https://picsum.photos/400?random=28" class="img-circle">
-                    <img src="https://picsum.photos/400?random=29" class="img-circle">
-                    <img src="https://picsum.photos/400?random=30" class="img-circle">
+                    <img src="https://picsum.photos/400?random=21" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=22" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=23" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=24" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=25" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=26" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=27" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=28" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=29" class="img-circle" loading="lazy">
+                    <img src="https://picsum.photos/400?random=30" class="img-circle" loading="lazy">
                 </div>
             </div>
         </div>
@@ -345,7 +362,7 @@
         </div>
     </div>
 
-    <!-- FULLSCREEN CINEMA MODE -->
+    <!-- CINEMA MODE -->
     <div id="cinema-mode">
         <img id="cinema-img" src="" alt="Slideshow">
         <div id="cinema-controls">
@@ -370,7 +387,6 @@
     </div>
 
     <script>
-        // --- DATA & ELEMENTS ---
         const giftBox = document.getElementById('gift-box');
         const splashScreen = document.getElementById('splash-screen');
         const mainContent = document.getElementById('main-content');
@@ -379,12 +395,10 @@
         
         let allImageSources = [];
         
-        // --- ON LOAD ---
         window.addEventListener('load', () => {
             collectAllImages();
             const urlParams = new URLSearchParams(window.location.search);
             const photoParam = urlParams.get('photo');
-
             if (photoParam) {
                 splashScreen.classList.add('hidden');
                 mainContent.style.opacity = '1';
@@ -407,11 +421,8 @@
             }, 800);
         }
         giftBox.addEventListener('click', openGift);
-        giftBox.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.keyCode === 13) openGift();
-        });
+        giftBox.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.keyCode === 13) openGift(); });
 
-        // --- SNOW LOGIC ---
         function startSnow() {
             setInterval(() => {
                 const snowflake = document.createElement('div');
@@ -426,35 +437,29 @@
             }, 200); 
         }
 
-        // --- AUDIO SYSTEM (DOUBLE DECKER) ---
+        // --- AUDIO SYSTEM ---
         const audioUrl = 'music/audio.mp3';
-        const fadeDuration = 10; // seconds crossfade
+        const fadeDuration = 10; 
         let deckA = new Audio(audioUrl);
         let deckB = new Audio(audioUrl);
         let currentDeck = deckA;
         let nextDeck = deckB;
         let isCrossfading = false;
         let audioMonitorId;
-        let stopTimeout; // To clear fades
+        let stopTimeout;
 
         deckA.preload = 'auto';
         deckB.preload = 'auto';
 
         function startMusic() {
-            // 1. CLEAR EVERYTHING to prevent overlaps
             clearTimeout(stopTimeout);
             cancelAnimationFrame(audioMonitorId);
-            
-            // 2. HARD RESET
             deckA.pause(); deckB.pause();
             deckA.currentTime = 0; deckB.currentTime = 0;
             deckA.volume = 0; deckB.volume = 0;
-            
-            // 3. SET POINTERS
             currentDeck = deckA; nextDeck = deckB;
             isCrossfading = false;
 
-            // 4. PLAY with simple fade in
             currentDeck.play().then(() => {
                 fadeVolume(currentDeck, 0, 1, 2000); 
                 monitorAudioLoop();
@@ -463,10 +468,8 @@
 
         function stopMusic() {
             cancelAnimationFrame(audioMonitorId);
-            // Quick fade out both
             fadeVolume(deckA, deckA.volume, 0, 1500);
             fadeVolume(deckB, deckB.volume, 0, 1500);
-            
             stopTimeout = setTimeout(() => {
                 deckA.pause(); deckB.pause();
                 deckA.currentTime = 0; deckB.currentTime = 0;
@@ -475,13 +478,10 @@
 
         function monitorAudioLoop() {
             if (!cinemaMode.classList.contains('active')) return;
-
             const remaining = currentDeck.duration - currentDeck.currentTime;
             
-            // Check crossfade window
             if (remaining <= fadeDuration && !isCrossfading && remaining > 0 && !isNaN(remaining)) {
                 isCrossfading = true;
-                
                 nextDeck.currentTime = 0;
                 nextDeck.volume = 0;
                 nextDeck.play();
@@ -498,8 +498,6 @@
                         currentDeck.pause();
                         currentDeck.volume = 0;
                         nextDeck.volume = 1;
-                        
-                        // Swap
                         let temp = currentDeck;
                         currentDeck = nextDeck;
                         nextDeck = temp;
@@ -524,14 +522,24 @@
             }, stepTime);
         }
 
-        // --- IMAGE COLLECTION ---
+        // --- IMAGE & FADE IN LOGIC ---
         function collectAllImages() {
             const uniqueSrcs = new Set();
             document.querySelectorAll('.scroll-row img').forEach(img => uniqueSrcs.add(img.src));
             allImageSources = Array.from(uniqueSrcs);
+            
+            // Add fade-in load listener to existing images
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                if (img.complete) {
+                    img.classList.add('loaded');
+                } else {
+                    img.addEventListener('load', () => img.classList.add('loaded'));
+                }
+            });
         }
 
-        // --- CINEMA MODE & IDLE LOGIC ---
+        // --- CINEMA MODE ---
         const cinemaMode = document.getElementById('cinema-mode');
         const cinemaImg = document.getElementById('cinema-img');
         const exitCinemaBtn = document.getElementById('exit-cinema');
@@ -553,19 +561,16 @@
         startCinemaBtn.addEventListener('click', () => {
             if (allImageSources.length === 0) collectAllImages();
             cinemaMode.classList.add('active');
-            
             if (document.documentElement.requestFullscreen) {
                 document.documentElement.requestFullscreen().catch(err => console.log(err));
             }
-
             document.addEventListener('mousemove', resetIdleTimer);
             document.addEventListener('mousedown', resetIdleTimer);
             document.addEventListener('keydown', resetIdleTimer);
             document.addEventListener('touchstart', resetIdleTimer);
-            
             resetIdleTimer();
             runCinema();
-            startMusic(); // START AUDIO
+            startMusic(); 
         });
 
         function runCinema() {
@@ -597,13 +602,11 @@
             cinemaMode.classList.remove('active');
             clearInterval(cinemaInterval);
             clearTimeout(idleTimeout);
-            stopMusic(); // STOP AUDIO
-            
+            stopMusic(); 
             document.removeEventListener('mousemove', resetIdleTimer);
             document.removeEventListener('mousedown', resetIdleTimer);
             document.removeEventListener('keydown', resetIdleTimer);
             document.removeEventListener('touchstart', resetIdleTimer);
-
             if (document.exitFullscreen) document.exitFullscreen();
         });
 
@@ -639,7 +642,7 @@
         closeBtn.addEventListener('click', closeLightboxFn);
         lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightboxFn(); });
 
-        // --- GRID & VIEW TOGGLE ---
+        // --- GRID ---
         const viewBtn = document.getElementById('view-toggle');
         const scrollContainer = document.querySelector('.scroll-container');
         let isGridView = false;
@@ -651,6 +654,8 @@
                 const img = document.createElement('img');
                 img.src = src;
                 img.classList.add('grid-img');
+                img.loading = "lazy"; // ALWAYS lazy load grid items
+                img.onload = () => img.classList.add('loaded'); // Add loaded class for fade in
                 img.onclick = () => openLightbox(src);
                 gridContainer.appendChild(img);
             });
@@ -669,7 +674,7 @@
             }
         });
 
-        // --- BUTTONS ---
+        // --- ACTIONS ---
         downloadBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             const link = document.createElement('a');
