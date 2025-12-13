@@ -49,15 +49,26 @@
             z-index: 9999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             transition: opacity 1s ease-out, visibility 1s;
+            opacity: 1;
+            visibility: visible;
         }
         
-        .gift-container { position: relative; cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .gift-container:hover { transform: scale(1.05); } 
+        /* TV Focus Fixes */
+        .gift-container { 
+            position: relative; 
+            cursor: pointer; 
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            outline: none;
+        }
+        .gift-container:hover, .gift-container:focus { transform: scale(1.05); } 
+        /* Gold ring when selected by remote */
+        .gift-container:focus .gift-body { box-shadow: 0 0 0 5px var(--gold), 0 10px 25px var(--shadow); }
         
         .click-text { 
             color: var(--gold); margin-top: 40px; font-size: 1.2rem; letter-spacing: 2px;
             font-family: 'Quicksand', sans-serif; text-transform: uppercase; font-weight: 700;
-            opacity: 0.9; animation: pulse 2s infinite; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            opacity: 0.9; animation: pulse 2s infinite; 
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
         .gift-lid { width: 140px; height: 35px; background-color: #ff4757; border-radius: 4px; position: relative; z-index: 2; box-shadow: 0 4px 15px var(--shadow); left: -10px; transition: transform 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045); }
@@ -67,7 +78,9 @@
         
         @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
         .gift-opened .gift-lid { transform: translateY(-120px) rotate(-10deg); }
-        .fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+        
+        /* Helper class to force hide */
+        .hidden { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
 
         /* --- MAIN CONTENT --- */
         #main-content {
@@ -189,8 +202,9 @@
 <body>
 
     <!-- SPLASH SCREEN -->
+    <!-- tabindex="0" makes it focusable on TV Remotes -->
     <div id="splash-screen">
-        <div class="gift-container" id="gift-box">
+        <div class="gift-container" id="gift-box" tabindex="0" role="button">
             <div class="gift-lid"><div class="ribbon-vertical"></div></div>
             <div class="gift-body"><div class="ribbon-vertical"></div><div class="ribbon-horizontal"></div></div>
         </div>
@@ -199,14 +213,13 @@
 
     <!-- MAIN GALLERY -->
     <div id="main-content">
-        <!-- Header with Toggle Button -->
         <div class="header-overlay">
             <h1>Christmas 2025</h1>
             <button class="view-btn" id="view-toggle">View Full Library</button>
         </div>
 
-        <!-- MARQUEE VIEW -->
         <div class="scroll-container">
+            <!-- ROW 1 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
                     <img src="https://picsum.photos/400?random=1" class="img-circle">
@@ -246,6 +259,8 @@
                     <img src="https://picsum.photos/400?random=17" class="img-circle">
                 </div>
             </div>
+
+            <!-- ROW 2 -->
             <div class="scroll-row">
                 <div class="scroll-track move-right">
                     <img src="https://picsum.photos/400?random=18" class="img-circle">
@@ -285,6 +300,8 @@
                     <img src="https://picsum.photos/400?random=34" class="img-circle">
                 </div>
             </div>
+
+            <!-- ROW 3 -->
             <div class="scroll-row">
                 <div class="scroll-track move-left">
                     <img src="https://picsum.photos/400?random=35" class="img-circle">
@@ -368,7 +385,7 @@
 
             if (photoParam) {
                 // If deep link, skip splash animation immediately
-                splashScreen.style.display = 'none';
+                splashScreen.classList.add('hidden');
                 mainContent.style.opacity = '1';
                 body.style.overflow = 'auto'; 
                 startSnow();
@@ -377,19 +394,26 @@
             }
         });
 
-        // --- SPLASH LOGIC ---
-        giftBox.addEventListener('click', () => {
+        // --- SPLASH LOGIC (FIXED FOR TV) ---
+        function openGift() {
             giftBox.classList.add('gift-opened');
             setTimeout(() => {
-                splashScreen.style.opacity = '0';
-                setTimeout(() => {
-                    splashScreen.style.visibility = 'hidden';
-                    body.style.overflow = 'auto'; 
-                }, 800);
+                splashScreen.classList.add('hidden');
                 mainContent.style.opacity = '1';
+                body.style.overflow = 'auto'; 
                 startSnow(); 
                 populateGrid(); 
-            }, 600);
+            }, 800);
+        }
+
+        // Mouse click
+        giftBox.addEventListener('click', openGift);
+        
+        // Keyboard (TV Remote "Enter" key)
+        giftBox.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                openGift();
+            }
         });
 
         function startSnow() {
@@ -420,7 +444,6 @@
             printImgTarget.src = src; 
             lightbox.classList.add('active');
 
-            // Update URL
             const url = new URL(window.location);
             url.searchParams.set('photo', src);
             window.history.pushState({}, '', url);
@@ -428,13 +451,11 @@
 
         function closeLightboxFn() {
             lightbox.classList.remove('active');
-            // Clean URL
             const url = new URL(window.location);
             url.searchParams.delete('photo');
             window.history.pushState({}, '', url);
         }
 
-        // Click Events
         document.querySelectorAll('.img-circle').forEach(img => {
             img.addEventListener('click', () => openLightbox(img.src));
         });
@@ -451,7 +472,7 @@
             const uniqueSrcs = new Set();
             document.querySelectorAll('.scroll-row img').forEach(img => uniqueSrcs.add(img.src));
             
-            gridContainer.innerHTML = ''; // Clear previous if any
+            gridContainer.innerHTML = ''; 
             uniqueSrcs.forEach(src => {
                 const img = document.createElement('img');
                 img.src = src;
@@ -492,7 +513,7 @@
                     await navigator.share({
                         title: 'Christmas 2025 Photo',
                         text: 'Look at this memory!',
-                        url: window.location.href // This URL now contains ?photo=...
+                        url: window.location.href 
                     });
                 } catch (err) { console.log('Error sharing:', err); }
             } else {
