@@ -82,7 +82,6 @@
             position: relative; z-index: 1; min-height: 100vh;
         }
 
-        /* Glass Header */
         .header-overlay {
             position: fixed; top: 40px; left: 50%; transform: translateX(-50%); z-index: 100;
             padding: 15px 40px; border-radius: 20px; text-align: center; 
@@ -137,7 +136,7 @@
         }
         .grid-img:hover { transform: translateY(-5px); border-color: var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
 
-        /* --- LIGHTBOX (Single Photo) --- */
+        /* --- LIGHTBOX --- */
         #lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(10, 15, 30, 0.95); z-index: 10000;
@@ -176,29 +175,33 @@
             background: black; z-index: 20000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; visibility: hidden; transition: opacity 0.5s ease;
+            cursor: default; /* Changed by JS based on idle state */
         }
         #cinema-mode.active { opacity: 1; visibility: visible; }
+
+        /* Hide cursor when idle */
+        #cinema-mode.idle { cursor: none; }
 
         /* The Image */
         #cinema-img {
             max-width: 100%; max-height: 100%; width: 100%; height: 100%;
-            object-fit: contain; /* Ensures photo is not cropped */
-            transition: opacity 0.8s ease-in-out; /* Smooth crossfade feel */
+            object-fit: contain; 
+            transition: opacity 0.8s ease-in-out; 
         }
 
-        /* Controls (Visible on hover/movement) */
+        /* Controls */
         #cinema-controls {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
             display: flex; gap: 15px;
             background: rgba(20, 20, 20, 0.7);
             padding: 15px 30px; border-radius: 40px;
             backdrop-filter: blur(10px);
-            transition: opacity 0.5s;
-            opacity: 0; /* Hidden by default until hover */
+            transition: opacity 0.5s ease;
+            opacity: 1; /* Default visible */
         }
         
-        /* Show controls when mouse moves over container */
-        #cinema-mode:hover #cinema-controls { opacity: 1; }
+        /* Hide controls when parent is idle */
+        #cinema-mode.idle #cinema-controls { opacity: 0; pointer-events: none; }
 
         .control-btn {
             background: transparent; border: 1px solid rgba(255,255,255,0.3);
@@ -208,9 +211,7 @@
         .control-btn.active { background: var(--gold); color: black; border-color: var(--gold); }
         .control-btn:hover { border-color: white; }
         
-        #exit-cinema {
-            background: var(--deep-red); border: none; font-weight: bold;
-        }
+        #exit-cinema { background: var(--deep-red); border: none; font-weight: bold; }
 
         /* --- PRINT AREA --- */
         #print-area { display: none; } 
@@ -445,7 +446,7 @@
             allImageSources = Array.from(uniqueSrcs);
         }
 
-        // --- CINEMA MODE (FULLSCREEN SLIDESHOW) ---
+        // --- CINEMA MODE & IDLE LOGIC ---
         const cinemaMode = document.getElementById('cinema-mode');
         const cinemaImg = document.getElementById('cinema-img');
         const exitCinemaBtn = document.getElementById('exit-cinema');
@@ -453,25 +454,44 @@
         
         let cinemaInterval;
         let cinemaIndex = 0;
-        let cinemaSpeed = 5000; // Default 5s
+        let cinemaSpeed = 5000;
+        let idleTimeout;
+
+        // Reset the idle timer on interaction
+        function resetIdleTimer() {
+            // Wake up
+            cinemaMode.classList.remove('idle');
+            clearTimeout(idleTimeout);
+            
+            // Go idle after 20s
+            if (cinemaMode.classList.contains('active')) {
+                idleTimeout = setTimeout(() => {
+                    cinemaMode.classList.add('idle');
+                }, 20000); 
+            }
+        }
 
         startCinemaBtn.addEventListener('click', () => {
             if (allImageSources.length === 0) collectAllImages();
             cinemaMode.classList.add('active');
             
-            // Go Fullscreen if supported
+            // Go Fullscreen
             if (document.documentElement.requestFullscreen) {
                 document.documentElement.requestFullscreen().catch(err => console.log(err));
             }
 
+            // Start Idle Listeners
+            document.addEventListener('mousemove', resetIdleTimer);
+            document.addEventListener('mousedown', resetIdleTimer);
+            document.addEventListener('keydown', resetIdleTimer);
+            document.addEventListener('touchstart', resetIdleTimer);
+            
+            resetIdleTimer(); // Init timer
             runCinema();
         });
 
         function runCinema() {
-            // Initial Image
             updateCinemaImage();
-            
-            // Start Loop
             clearInterval(cinemaInterval);
             cinemaInterval = setInterval(() => {
                 cinemaIndex = (cinemaIndex + 1) % allImageSources.length;
@@ -480,29 +500,32 @@
         }
 
         function updateCinemaImage() {
-            // Simple fade effect
             cinemaImg.style.opacity = 0;
             setTimeout(() => {
                 cinemaImg.src = allImageSources[cinemaIndex];
                 cinemaImg.style.opacity = 1;
-            }, 800); // Wait for fade out, then swap and fade in
+            }, 800);
         }
 
         function setSpeed(ms, btn) {
             cinemaSpeed = ms;
-            // Update UI buttons
             document.querySelectorAll('.control-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            // Restart with new speed
             runCinema();
         }
-        
-        // Expose setSpeed to HTML onclick
         window.setSpeed = setSpeed;
 
         exitCinemaBtn.addEventListener('click', () => {
             cinemaMode.classList.remove('active');
             clearInterval(cinemaInterval);
+            clearTimeout(idleTimeout);
+            
+            // Clean listeners
+            document.removeEventListener('mousemove', resetIdleTimer);
+            document.removeEventListener('mousedown', resetIdleTimer);
+            document.removeEventListener('keydown', resetIdleTimer);
+            document.removeEventListener('touchstart', resetIdleTimer);
+
             if (document.exitFullscreen) document.exitFullscreen();
         });
 
