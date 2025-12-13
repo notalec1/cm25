@@ -12,6 +12,7 @@
             margin: 0;
             padding: 0;
             background-color: #d45d79; 
+            /* Subtle radial gradient pattern */
             background-image: 
                 radial-gradient(white 15%, transparent 16%),
                 radial-gradient(white 15%, transparent 16%);
@@ -21,6 +22,26 @@
             overflow: hidden; 
             height: 100vh;
             width: 100vw;
+        }
+
+        /* --- SNOWFLAKE STYLES --- */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: #fff;
+            font-size: 1em;
+            font-family: Arial, sans-serif; /* simple font for the character */
+            text-shadow: 0 0 5px #000;
+            user-select: none;
+            z-index: 1; /* Behind the lightbox, in front of background */
+            pointer-events: none; /* Let clicks pass through */
+            animation-name: fall;
+            animation-timing-function: linear;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) translateX(0); opacity: 1; }
+            100% { transform: translateY(110vh) translateX(20px); opacity: 0; }
         }
 
         /* --- SPLASH SCREEN --- */
@@ -63,8 +84,9 @@
             width: 180px; height: 180px; border-radius: 50%; object-fit: cover;
             border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             transition: transform 0.3s; cursor: pointer;
+            position: relative; z-index: 5; /* Ensure images are above snow */
         }
-        .img-circle:hover { transform: scale(1.1); z-index: 5; border-color: #ffd700; }
+        .img-circle:hover { transform: scale(1.1); z-index: 6; border-color: #ffd700; }
         .move-left { animation: scrollLeft 35s linear infinite; }
         .move-right { animation: scrollRight 40s linear infinite; }
         @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
@@ -116,8 +138,8 @@
                 margin: 0;
             }
 
-            /* Hide Web UI */
-            #splash-screen, #main-content, #lightbox { 
+            /* Hide Web UI & Snowflakes */
+            #splash-screen, #main-content, #lightbox, .snowflake { 
                 display: none !important; 
                 height: 0; width: 0; overflow: hidden;
             }
@@ -136,32 +158,28 @@
             /* The Flex Card */
             #print-area {
                 display: flex !important;
-                flex-direction: row; /* Force side-by-side */
+                flex-direction: row; 
                 align-items: center;
                 justify-content: center;
-                
-                /* Absolute positioning to guarantee placement */
                 position: absolute;
                 top: 0; left: 0;
                 width: 297mm;
                 height: 210mm;
                 box-sizing: border-box;
-                padding: 15mm; /* Nice margin */
+                padding: 15mm; 
             }
 
-            /* Add a nice border around the actual content area */
             .print-card-content {
                 display: flex;
                 flex-direction: row;
                 width: 100%;
                 height: 100%;
-                border: 4px double #c92a42; /* Festive double border */
+                border: 4px double #c92a42; 
                 border-radius: 20px;
                 padding: 20px;
                 box-sizing: border-box;
             }
 
-            /* Left: Image (55%) */
             .print-image-container {
                 width: 55%; 
                 height: 100%;
@@ -181,7 +199,6 @@
                 box-shadow: none; 
             }
 
-            /* Right: Text (45%) */
             .print-text-container {
                 width: 45%;
                 height: 100%;
@@ -193,27 +210,18 @@
                 font-family: 'Dancing Script', cursive;
             }
 
-            /* 
-               CRITICAL FIX: 
-               We disable gradients and use solid colors here 
-               so it works on every printer regardless of settings.
-            */
             .print-title {
                 font-size: 5rem;
                 line-height: 1;
                 margin-bottom: 20px;
-                
-                /* Force Solid Red */
                 color: #b22222 !important; 
                 background: none !important;
                 -webkit-text-fill-color: #b22222 !important;
-                text-shadow: 2px 2px 0px #eee; /* Slight shadow for depth */
+                text-shadow: 2px 2px 0px #eee; 
             }
 
             .print-year {
                 font-size: 3.5rem;
-                
-                /* Force Solid Green */
                 color: #2e8b57 !important;
                 font-weight: bold;
                 -webkit-print-color-adjust: exact !important;
@@ -303,7 +311,6 @@
 
     <!-- === PART 4: HIDDEN PRINT LAYOUT === -->
     <div id="print-area">
-        <!-- Added an inner container for the border effect -->
         <div class="print-card-content">
             <div class="print-image-container">
                 <img id="print-img-target" src="" alt="Print Photo">
@@ -322,15 +329,40 @@
         const mainContent = document.getElementById('main-content');
         const body = document.body;
 
+        // --- Splash Screen Logic ---
         giftBox.addEventListener('click', () => {
             giftBox.classList.add('gift-opened');
             setTimeout(() => {
                 splashScreen.classList.add('fade-out');
                 mainContent.style.opacity = '1';
                 body.style.overflow = 'auto'; 
+                startSnow(); // Start snowing when gift is opened
             }, 500);
         });
 
+        // --- Snow Logic ---
+        function startSnow() {
+            setInterval(() => {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                
+                // Randomize Snowflake Properties
+                snowflake.innerText = '❄'; 
+                snowflake.style.left = Math.random() * 100 + 'vw'; // Random horizontal pos
+                snowflake.style.animationDuration = Math.random() * 3 + 2 + 's'; // Random speed (2-5s)
+                snowflake.style.opacity = Math.random(); // Random opacity
+                snowflake.style.fontSize = Math.random() * 10 + 10 + 'px'; // Random size
+
+                document.body.appendChild(snowflake);
+
+                // Remove snowflake after it falls to save memory
+                setTimeout(() => {
+                    snowflake.remove();
+                }, 5000);
+            }, 100); // Create a new snowflake every 100ms
+        }
+
+        // --- Lightbox & Buttons ---
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const closeBtn = document.getElementById('close-btn');
